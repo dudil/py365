@@ -4,8 +4,14 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+autopep8 = "*"
 
 [packages]
+setuptools = "*"
+wheel = "*"
+requests = "*"
+adal = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"

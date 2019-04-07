@@ -1,8 +1,12 @@
+# API Reference:
+# https://docs.microsoft.com/en-us/graph/api/resources/invitation
+
 from enum import Enum
-from .app_connection import AppConnection
+from dataclasses import dataclass
 
-INVITATION_ENDPOINT = '/invitations'
-
+from .. import AppConnection
+from .. import Recipient
+from .. import utils
 
 class InvitedUserTypes(Enum):
     GUEST = "Guest"
@@ -14,9 +18,26 @@ class InvitationStatuValues(Enum):
     IN_PROGRESS = "InProgress"
     ERROR = "Error"
 
+# https://docs.microsoft.com/en-us/graph/api/resources/invitedusermessageinfo
+@dataclass
+class InvitedUserMessageInfo:
+    ccRecipient: Recipient
+    customizedMessageBody : str
+    messageLanguage: str = "en-US"
+
+    def __repr__(self):
+        repr = {
+            "ccRecipients": [ccRecipient],
+            "customizedMessageBody": customizedMessageBody,
+            "messageLanguage": messageLanguage
+        }
+        return repr
 
 class InvitationManager:
+    # Class Private Consts
+    __CREATE_INVITATION_ENDPOINT = '/invitations'
 
+    # Initialisation method
     def __init__(self, connection: AppConnection, email: str, 
         redirect_url: str, display_name: str = None, 
         send_message: bool = False, user_type: InvitedUserTypes = InvitedUserTypes.GUEST):
@@ -32,32 +53,27 @@ class InvitationManager:
         self.status: InvitationStatuValues = None
         self.invited_user = None
 
-
-    def __addPayloadParam__(self, payload: dict, key: str, value: any):
-        payload.update({key: value} if value else {})
-        return payload
-
-
-    def CreateInvitation(self):
+    # API Reference:
+    # https://docs.microsoft.com/en-us/graph/api/invitation-post
+    def createInvitation(self):
         payload = {}
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "invitedUserEmailAddress", self.email)
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "inviteRedirectUrl", self.redirect_url)
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "invitedUserDisplayName", self.display_name)
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "invitedUserType", self.user_type.value)
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "sendInvitationMessage", self.send_message)
-        payload = self.__addPayloadParam__(
+        payload = utils.addPayloadParam(
             payload, "invitedUserMessageInfo", self.message)
         
-        response = self.connection.post(INVITATION_ENDPOINT, json=payload)
+        response = self.connection.post(
+            self.__CREATE_INVITATION_ENDPOINT, json=payload)
         #TODO check for valid reponse
         self.redeem_url = response.json().get("inviteRedeemUrl", None)
         self.status = response.json().get("status", InvitationStatuValues.ERROR)
         self.invited_user = response.json().get("invitedUser", None)
 
-
-#### Create invitation
