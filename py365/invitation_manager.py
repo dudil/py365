@@ -61,18 +61,3 @@ class InvitationManager:
 
 
 #### Create invitation
-
-'''
-invitedUserEmailAddress = "jeffc@starstechnologies.com"
-inviteRedirectUrl = "https://office.com"
-
-payload = {
-    "invitedUserDisplayName": "Jeff Cabral",
-    "invitedUserType": "Member",
-    "invitedUserEmailAddress": invitedUserEmailAddress,
-    "inviteRedirectUrl": inviteRedirectUrl,
-    "sendInvitationMessage": "true"
-    }
-response = session.post(full_endpoint, json=payload)
-print(f'The redeem URL is: {response.json().get("inviteRedeemUrl", "ERROR")}')
-'''
