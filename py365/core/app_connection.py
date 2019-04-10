@@ -20,7 +20,7 @@ class AppConnection:
 
 
     #TODO: Move to Utils Package
-    def get_api_url(self, endpoint):
+    def get_api_url(self, endpoint:str):
         """Convert a relative path such as /me/photo/$value to a full URI
         This is much easier to work with how MS are actually documanting their API
         """
@@ -46,12 +46,23 @@ class AppConnection:
         return response
 
 
-    def post(self, endpoint, json=None):
+    def post(self, endpoint, json:dict=None):
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()
 
         response = self.session.post(url, json=json)
         return response
+
+    
+    def patch(self, endpoint, json:dict):
+        url = self.get_api_url(endpoint)
+        if self.session is None:
+            self.authenticate()
+
+        response = self.session.patch(url, json=json)
+        return response
+
+
 
     

@@ -2,7 +2,9 @@ from dataclasses import dataclass
 from enum import Enum
 import uuid
 import datetime
+
 from .. import AppConnection
+from .. import utils
 
 class AgeGroup(Enum):
     null: "null"
@@ -100,7 +102,7 @@ class MailboxSettings:
 
 # https://docs.microsoft.com/en-us/graph/api/resources/user
 @dataclass
-class UserData:
+class User:
     aboutMe: str = None
     accountEnabled: bool = None
     ageGroup: AgeGroup = None
@@ -119,7 +121,6 @@ class UserData:
     faxNumber: str = None
     givenName: str = None
     hireDate: datetime = None
-    id: str = None
     imAddresses: [str] = None
     interests: [str] = None
     isResourceAccount: bool = None
@@ -137,28 +138,58 @@ class UserData:
     userPrincipalName: str = None
     id: str = None
 
-    
+    def toPayload(self):
+        payload = {}
+        payload = utils.addPayloadParam(
+            payload, "businessPhones", self.businessPhones)
+        payload = utils.addPayloadParam(
+            payload, "city", self.city)
+        payload = utils.addPayloadParam(
+            payload, "companyName", self.companyName)
+        payload = utils.addPayloadParam(
+            payload, "country", self.country)
+        payload = utils.addPayloadParam(
+            payload, "department", self.department)
+        payload = utils.addPayloadParam(
+            payload, "displayName", self.displayName)
+        payload = utils.addPayloadParam(
+            payload, "givenName", self.givenName)
+        payload = utils.addPayloadParam(
+            payload, "jobTitle", self.jobTitle)
+        payload = utils.addPayloadParam(
+            payload, "officeLocation", self.officeLocation)
+        payload = utils.addPayloadParam(
+            payload, "surname", self.surname)
+        return payload
 
-class User:
-    # Class Private Consts
-    __USERS_ENDPOINT = '/users/'
+    @classmethod
+    def userFromResponse(cls, userData:dict):
+        user = cls()
+        user.businessPhones = userData.get("businessPhones")
+        user.displayName = userData.get("displayName")
+        user.givenName = userData.get("givenName")
+        user.jobTitle = userData.get("jobTitle")
+        user.mail = userData.get("mail")
+        user.mobilePhone = userData.get("mobilePhone")
+        user.officeLocation = userData.get("officeLocation")
+        user.preferredLanguage = userData.get("preferredLanguage")
+        user.surname = userData.get("surname")
+        user.userPrincipalName = userData.get("userPrincipalName")
+        user.id = userData.get("id")
 
-    def __init__(self, lookup: str, connection: AppConnection):
-        self.lookup = lookup
+        return user
+
+class Users:
+    def __init__(self, connection: AppConnection):
+        self.__USERS_ENDPOINT = '/users/'
         self.connection = connection
 
 
-    @classmethod
-    def byId(cls, id: str, connection: AppConnection):
-        return cls(lookup=id, connection=connection)
-
-
-    @classmethod
-    def byUserPrincipalName(cls, userPrincipalName: str, connection: AppConnection):
-        return cls(lookup=userPrincipalName, connection=connection)
-
-    def getUser(self):
-        lookupEndpoint = self.__USERS_ENDPOINT + self.lookup
+    '''
+    lookupby is either user AAD id or user Priniciapl Name (login username)
+    '''
+    def getUser(self, lookupby :str):
+        lookupEndpoint = self.__USERS_ENDPOINT + lookupby
         response = self.connection.get(lookupEndpoint)
         #TODO check for valid reponse
         if response.ok:
@@ -166,22 +197,21 @@ class User:
         else:
             print(f'Request Error{response.text}')
 
-        # initialise UserData
-        userData = UserData()
+        # initialise 
         respJson = response.json()
-        userData.businessPhones = respJson.get("businessPhones")
-        userData.displayName = respJson.get("displayName")
-        userData.givenName = respJson.get("givenName")
-        userData.jobTitle = respJson.get("jobTitle")
-        userData.mail = respJson.get("mail")
-        userData.mobilePhone = respJson.get("mobilePhone")
-        userData.officeLocation = respJson.get("officeLocation")
-        userData.preferredLanguage = respJson.get("preferredLanguage")
-        userData.surname = respJson.get("surname")
-        userData.userPrincipalName = respJson.get("userPrincipalName")
-        userData.id = respJson.get("id")
+        user = User.userFromResponse(respJson)
 
-        return userData
+        return user
+        
+    '''
+    lookupby is either user AAD id or user Priniciapl Name (login username)
+    '''
+    def updateUser(self, lookupby: str, userData: User):
+        lookupEndpoint = self.__USERS_ENDPOINT + lookupby
+        response = self.connection.patch(lookupEndpoint, userData.toPayload())
+
+        return response
+        
 
 
 

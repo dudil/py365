@@ -32,31 +32,21 @@ class InvitedUserMessageInfo:
             "messageLanguage": messageLanguage
         }
         return repr
+@dataclass
+class Invitation:
+    display_name: str
+    email: str
+    send_message: bool = True
+    user_type: InvitedUserTypes = InvitedUserTypes.GUEST
+    redirect_url: str = "https://office.com"
+    redeem_url: str = None
+    _status: InvitationStatuValues = None
+    _invited_user = None
+    message = None
 
-class InvitationManager:
-    # Class Private Consts
-    __CREATE_INVITATION_ENDPOINT = '/invitations'
-
-    # Initialisation method
-    def __init__(self, connection: AppConnection, email: str, 
-        redirect_url: str, display_name: str = None, 
-        send_message: bool = False, user_type: InvitedUserTypes = InvitedUserTypes.GUEST):
-
-        self.connection = connection
-        self.display_name: str = display_name
-        self.email: str = email
-        self.message = None
-        self.redirect_url: str = redirect_url
-        self.send_message: bool = send_message
-        self.redeem_url: str = None
-        self.user_type: InvitedUserTypes = user_type
-        self.status: InvitationStatuValues = None
-        self.invited_user = None
-
-    # API Reference:
-    # https://docs.microsoft.com/en-us/graph/api/invitation-post
-    def createInvitation(self):
+    def toPayload(self):
         payload = {}
+        
         payload = utils.addPayloadParam(
             payload, "invitedUserEmailAddress", self.email)
         payload = utils.addPayloadParam(
@@ -69,11 +59,30 @@ class InvitationManager:
             payload, "sendInvitationMessage", self.send_message)
         payload = utils.addPayloadParam(
             payload, "invitedUserMessageInfo", self.message)
+
+        return payload
+    
+    @property
+    def invited_user(self):
+        return self._invited_user.get("id", None)
+
+
+class InvitationManager:
+    # Initialisation method
+    def __init__(self, connection: AppConnection):
+        self.__CREATE_INVITATION_ENDPOINT = '/invitations'
+        self.connection = connection
+
+    # API Reference:
+    # https://docs.microsoft.com/en-us/graph/api/invitation-post
+    def createInvitation(self, invitation:Invitation):
         
         response = self.connection.post(
-            self.__CREATE_INVITATION_ENDPOINT, json=payload)
+            self.__CREATE_INVITATION_ENDPOINT, json=invitation.toPayload())
         #TODO check for valid reponse
-        self.redeem_url = response.json().get("inviteRedeemUrl", None)
-        self.status = response.json().get("status", InvitationStatuValues.ERROR)
-        self.invited_user = response.json().get("invitedUser", None)
+        invitation.redeem_url = response.json().get("inviteRedeemUrl", None)
+        invitation._status = response.json().get("status", InvitationStatuValues.ERROR)
+        invitation._invited_user = response.json().get("invitedUser", None)
+
+        return invitation
 
