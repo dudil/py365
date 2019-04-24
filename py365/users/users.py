@@ -1,10 +1,13 @@
+import datetime
+import random
+import string
+import uuid
 from dataclasses import dataclass
 from enum import Enum
-import uuid
-import datetime
 
 from .. import AppConnection
 from .. import utils
+
 
 class AgeGroup(Enum):
     null: "null"
@@ -35,12 +38,12 @@ class AssignedLicense:
     disabledPlans: [uuid.UUID]
     skuId: uuid.UUID
 
-    def __repr__(self):
-        repr = {
-            "disabledPlans": disabledPlans,
-            "skuId": skuId
+    def payload(self):
+        payload = {
+            "disabledPlans": self.disabledPlans,
+            "skuId": self.skuId
         }
-        return repr
+        return payload
 
 
 # https://docs.microsoft.com/en-us/graph/api/resources/assignedplan
@@ -51,14 +54,15 @@ class AssignedPlan:
     service: str
     servicePlanId: uuid.UUID
 
-    def __repr__(self):
-        repr = {
-            "assignedDateTime": assignedDateTime,
-            "capabilityStatus": capabilityStatus,
-            "service": service,
-            "servicePlanId": servicePlanId
+    def payload(self):
+        payload = {
+            "assignedDateTime": self.assignedDateTime,
+            "capabilityStatus": self.capabilityStatus,
+            "service": self.service,
+            "servicePlanId": self.servicePlanId
         }
-        return repr
+        return payload
+
 
 # https://docs.microsoft.com/en-us/graph/api/resources/licenseassignmentstate
 @dataclass
@@ -69,19 +73,19 @@ class LicenseAssignmentState:
     skuId: str
     state: str
 
-
-    def __repr__(self):
-        repr = {
-            "assignedByGroup": assignedByGroup,
-            "disablePlans": disablePlans,
-            "error": error,
-            "skuId": skuId,
-            "state": state
+    def payload(self):
+        payload = {
+            "assignedByGroup": self.assignedByGroup,
+            "disablePlans": self.disablePlans,
+            "error": self.error,
+            "skuId": self.skuId,
+            "state": self.state
         }
-        return repr
+        return payload
+
 
 # https://docs.microsoft.com/en-us/graph/api/resources/mailboxsettings
-#TODO: set properties to correct objects
+# TODO: set properties to correct objects
 @dataclass
 class MailboxSettings:
     archiveFolder: str
@@ -90,14 +94,47 @@ class MailboxSettings:
     timeZone: str
     workingHours: any
 
-    def __repr__(self):
-        repr = {
-            "archiveFolder": archiveFolder,
-            "automaticRepliesSetting": automaticRepliesSetting,
-            "language": language,
-            "timeZone": timeZone,
-            "workingHours": workingHours
+    def payload(self):
+        payload = {
+            "archiveFolder": self.archiveFolder,
+            "automaticRepliesSetting": self.automaticRepliesSetting,
+            "language": self.language,
+            "timeZone": self.timeZone,
+            "workingHours": self.workingHours
         }
+        return payload
+
+
+# https://docs.microsoft.com/en-us/graph/api/resources/passwordprofile?view=graph-rest-1.0
+@dataclass
+class PasswordProfile:
+    forceChangePasswordNextSignIn: bool
+    password: str = None
+    forceChangePasswordNextSignInWithMfa: bool = None
+
+    def payload(self):
+        payload: dict = {}
+        payload = utils.addPayloadParam(
+            payload, "forceChangePasswordNextSignIn", self.forceChangePasswordNextSignIn)
+        payload = utils.addPayloadParam(
+            payload, "forceChangePasswordNextSignInWithMfa", self.forceChangePasswordNextSignInWithMfa)
+        payload = utils.addPayloadParam(
+            payload, "password", self.password)
+        return payload
+
+    def generateFirstPassword(self, pwLen: int = 10):
+        """Generate a random password """
+        randomSource = string.ascii_letters + string.digits + string.punctuation
+        password = random.choice(string.ascii_lowercase)
+        password += random.choice(string.ascii_uppercase)
+        password += random.choice(string.digits)
+        password += random.choice(string.punctuation)
+        for i in range(pwLen):
+            password += random.choice(randomSource)
+        passwordList = list(password)
+        random.SystemRandom().shuffle(passwordList)
+        password = ''.join(passwordList)
+        self.password = password
 
 
 # https://docs.microsoft.com/en-us/graph/api/resources/user
@@ -124,6 +161,7 @@ class User:
     imAddresses: [str] = None
     interests: [str] = None
     isResourceAccount: bool = None
+    otherMails: [str] = None
     jobTitle: str = None
     legalAgeGroupClassification: LegalAgeGroupClassification = None
     licenseAssignmentStates: [LicenseAssignmentState] = None
@@ -132,14 +170,23 @@ class User:
     mailNickname: str = None
     mobilePhone: str = None
     mySite: str = None
+    passwordProfile: PasswordProfile = None
+    onPremisesImmutableId: str = None
+    usageLocation: str = None
     officeLocation: str = None
     preferredLanguage: str = None
     surname: str = None
     userPrincipalName: str = None
     id: str = None
 
-    def toPayload(self):
-        payload = {}
+    def payload(self) -> dict:
+        payload: dict = {}
+        payload = utils.addPayloadParam(
+            payload, "accountEnabled", self.accountEnabled)
+        payload = utils.addPayloadParam(
+            payload, "mailNickname", self.mailNickname)
+        payload = utils.addPayloadParam(
+            payload, "userPrincipalName", self.userPrincipalName)
         payload = utils.addPayloadParam(
             payload, "businessPhones", self.businessPhones)
         payload = utils.addPayloadParam(
@@ -155,15 +202,23 @@ class User:
         payload = utils.addPayloadParam(
             payload, "givenName", self.givenName)
         payload = utils.addPayloadParam(
+            payload, "otherMails", self.otherMails)
+        payload = utils.addPayloadParam(
             payload, "jobTitle", self.jobTitle)
+        payload = utils.addPayloadParam(
+            payload, "usageLocation", self.usageLocation)
         payload = utils.addPayloadParam(
             payload, "officeLocation", self.officeLocation)
         payload = utils.addPayloadParam(
             payload, "surname", self.surname)
+        payload = utils.addPayloadParam(
+            payload, "passwordProfile", self.passwordProfile.payload())
+        payload = utils.addPayloadParam(
+            payload, "onPremisesImmutableId", self.onPremisesImmutableId)
         return payload
 
     @classmethod
-    def userFromResponse(cls, userData:dict):
+    def userFromResponse(cls, userData: dict):
         user = cls()
         user.businessPhones = userData.get("businessPhones")
         user.displayName = userData.get("displayName")
@@ -179,19 +234,20 @@ class User:
 
         return user
 
+
 class Users:
     def __init__(self, connection: AppConnection):
         self.__USERS_ENDPOINT = '/users/'
         self.connection = connection
 
-
     '''
     lookupby is either user AAD id or user Priniciapl Name (login username)
     '''
-    def getUser(self, lookupby :str):
+
+    def getUser(self, lookupby: str):
         lookupEndpoint = self.__USERS_ENDPOINT + lookupby
         response = self.connection.get(lookupEndpoint)
-        #TODO check for valid reponse
+        # TODO check for valid response
         if response.ok:
             print(f'User Name is: {response.json().get("displayName", "ERROR")}')
         else:
@@ -202,21 +258,26 @@ class Users:
         user = User.userFromResponse(respJson)
 
         return user
-        
+
     '''
-    lookupby is either user AAD id or user Priniciapl Name (login username)
+    lookupby is either user AAD id or user Principal Name (login username)
     '''
+
     def updateUser(self, lookupby: str, userData: User):
         lookupEndpoint = self.__USERS_ENDPOINT + lookupby
-        response = self.connection.patch(lookupEndpoint, userData.toPayload())
+        response = self.connection.patch(lookupEndpoint, userData.payload())
 
         return response
-        
 
+    def createUser(self, newUser: User):
+        endpoint = self.__USERS_ENDPOINT
 
+        assert (newUser.accountEnabled is not None)
+        assert (newUser.displayName is not None)
+        assert (newUser.mailNickname is not None)
+        assert (newUser.userPrincipalName is not None)
+        assert (newUser.passwordProfile is not None)
 
+        response = self.connection.post(endpoint=endpoint, json=newUser.payload())
 
-
-
-
-
+        return response

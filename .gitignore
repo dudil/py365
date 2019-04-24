@@ -108,3 +108,6 @@ test.py
 
 # VSCode project file
 .vscode
+
+# PyCharm files
+.idea

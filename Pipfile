@@ -13,6 +13,9 @@ wheel = "*"
 requests = "*"
 adal = "*"
 twine = "*"
+pycountry = "*"
+urllib3 = "*"
+urllib = "*"
 
 [requires]
 python_version = "3.7"
