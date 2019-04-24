@@ -1,8 +1,6 @@
-import os
 import setuptools
 
-
-VERSION = '0.0.1'
+VERSION = '0.0.4'
 
 CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
@@ -23,6 +21,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/dudil/py365",
     packages=setuptools.find_packages(),
-    python_requires=">=3.7",
+    python_requires=">=3.6",
     classifiers=CLASSIFIERS,
 )

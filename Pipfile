@@ -15,7 +15,7 @@ adal = "*"
 twine = "*"
 pycountry = "*"
 urllib3 = "*"
-urllib = "*"
+pip = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "3.6"
