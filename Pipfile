@@ -6,16 +6,14 @@ verify_ssl = true
 [dev-packages]
 autopep8 = "*"
 pylint = "*"
-
-[packages]
 setuptools = "*"
 wheel = "*"
+twine = "*"
+
+[packages]
 requests = "*"
 adal = "*"
-twine = "*"
-pycountry = "*"
 urllib3 = "*"
-pip = "*"
 
 [requires]
 python_version = "3.6"

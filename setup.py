@@ -1,11 +1,18 @@
 import setuptools
 
-VERSION = '0.1.0'
+VERSION = '0.1.1'
 
 CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
     'Programming Language :: Python :: 3',
     'Operating System :: OS Independent',
+    'Development Status :: 3 - Alpha',
+]
+
+REQUIRES = [
+    'adal >= 1.2.1',
+    'requests >= 2.21.0',
+    'urllib3 >= 1.24.2',
 ]
 
 with open("README.md", "r") as fh:
@@ -19,8 +26,10 @@ setuptools.setup(
     description="Python Library for App Development over MS Open Graph ",
     long_description=long_description,
     long_description_content_type="text/markdown",
+    license='MIT',
     url="https://github.com/dudil/py365",
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
     classifiers=CLASSIFIERS,
+    install_requires=REQUIRES,
 )
