@@ -1,8 +1,8 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
-from auth import AppConnection
-from resources import User
+from py365.auth import AppConnection
+from py365.resources import User
 
 
 class Users(object):

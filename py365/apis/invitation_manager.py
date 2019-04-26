@@ -2,9 +2,9 @@
 # https://docs.microsoft.com/en-us/graph/api/resources/invitation
 
 
-from auth import AppConnection
-from enums import InvitationStatusValues
-from resources import Invitation
+from py365.auth import AppConnection
+from py365.enums import InvitationStatusValues
+from py365.resources import Invitation
 
 
 class InvitationManager(object):

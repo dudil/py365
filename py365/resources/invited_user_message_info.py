@@ -1,5 +1,5 @@
-from . import Recipient
 from ._base_resource import BaseResource
+from .recipient import Recipient
 
 
 class InvitedUserMessageInfo(BaseResource):

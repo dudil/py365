@@ -1,5 +1,4 @@
-from enums.invitation_status_values import InvitationStatusValues
-from enums.invited_user_types import InvitedUserTypes
+from py365.enums import InvitationStatusValues, InvitedUserTypes
 from ._base_resource import BaseResource
 
 
