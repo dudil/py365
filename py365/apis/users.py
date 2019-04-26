@@ -1,8 +1,8 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
-from core.app_connection import AppConnection
-from users.user import User
+from auth import AppConnection
+from resources import User
 
 
 class Users(object):
@@ -59,7 +59,7 @@ class Users(object):
         :rtype:
         """
         lookupEndpoint = self.__USERS_ENDPOINT + lookUpBy
-        response = self.connection.patch(lookupEndpoint, userData.payload())
+        response = self.connection.patch(lookupEndpoint, userData.payload)
 
         if response.ok:
             respJson = response.json()
@@ -88,7 +88,7 @@ class Users(object):
         assert (newUser.userPrincipalName is not None)
         assert (newUser.passwordProfile is not None)
 
-        json = newUser.payload()
+        json = newUser.payload
         response = self.connection.post(endpoint=endpoint, json=json)
 
         if response.ok:

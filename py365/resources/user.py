@@ -3,8 +3,8 @@ https://docs.microsoft.com/en-us/graph/api/resources/user
 """
 import datetime
 
-from resources.base_resource import BaseResource
-from users.password_profile import PasswordProfile
+from ._base_resource import BaseResource
+from .password_profile import PasswordProfile
 
 
 # TODO: Move to the resource folder

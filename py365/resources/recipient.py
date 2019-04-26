@@ -1,8 +1,8 @@
 
 
 # https://docs.microsoft.com/en-us/graph/api/resources/recipient
-from resources.base_resource import BaseResource
-from resources.email_address import EmailAddress
+from ._base_resource import BaseResource
+from .email_address import EmailAddress
 
 
 class Recipient(BaseResource):

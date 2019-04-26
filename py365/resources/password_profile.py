@@ -2,7 +2,7 @@
 import random
 import string
 
-from resources.base_resource import BaseResource
+from ._base_resource import BaseResource
 
 
 class PasswordProfile(BaseResource):

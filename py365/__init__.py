@@ -1,3 +1,3 @@
-from .py365 import *
+from .py365 import Py365
 
 name = "py365"

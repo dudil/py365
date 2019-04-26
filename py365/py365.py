@@ -1,6 +1,5 @@
-from core.app_connection import AppConnection
-from identity_and_access.invitation_manager import InvitationManager
-from users.users import Users
+from py365.apis import InvitationManager, Users
+from py365.auth import AppConnection
 
 
 class Py365:

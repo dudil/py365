@@ -1,7 +1,7 @@
 """ https://docs.microsoft.com/en-us/graph/api/resources/assignedlicense """
 import uuid
 
-from resources.base_resource import BaseResource
+from ._base_resource import BaseResource
 
 
 class AssignedLicense(BaseResource):

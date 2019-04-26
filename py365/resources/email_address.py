@@ -1,7 +1,7 @@
 """
 Represent the email address OG resource
 """
-from resources.base_resource import BaseResource
+from ._base_resource import BaseResource
 
 
 class EmailAddress(BaseResource):
