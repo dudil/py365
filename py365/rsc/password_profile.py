@@ -20,7 +20,7 @@ class PasswordProfile(BaseResource):
         self.forceChangePasswordNextSignInWithMfa: bool = forceChangePasswordNextSignInWithMfa
         BaseResource.__init__(self)
 
-    def generateFirstPassword( self, pwLen: int = 10 ):
+    def generateRandomPassword( self, pwLen: int = 10 ):
         """
         Generate Random Password to use
         :param pwLen: the password length (optional)

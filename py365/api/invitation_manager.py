@@ -4,7 +4,7 @@
 
 from py365.auth import AppConnection
 from py365.enums import InvitationStatusValues
-from py365.resources import Invitation
+from py365.rsc import Invitation
 
 
 class InvitationManager(object):

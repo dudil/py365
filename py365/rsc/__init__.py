@@ -6,4 +6,4 @@ from .password_profile import PasswordProfile
 from .recipient import Recipient
 from .user import User
 
-name = "py365.resources"
+name = "py365.rsc"

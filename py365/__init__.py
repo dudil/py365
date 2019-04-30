@@ -1,3 +1,3 @@
-from .py365 import Py365
+from .graph365 import Graph365
 
 name = "py365"

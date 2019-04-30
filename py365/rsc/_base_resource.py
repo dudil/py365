@@ -7,7 +7,7 @@ class BaseResource(object):
     @property
     def payload( self ) -> dict:
         """
-        convert the resource into payload for the Open Graph API call
+        convert the resource into payload for the Open Graph365 API call
         """
         data = vars(self)
         payload: dict = {}

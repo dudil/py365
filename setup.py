@@ -23,7 +23,7 @@ setuptools.setup(
     version=VERSION,
     author="Dudi Levy",
     author_email="dudil@users.noreply.github.com",
-    description="Python Library for App Development over MS Open Graph ",
+    description="Python Library for App Development over MS Open Graph365 ",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license='MIT',

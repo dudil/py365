@@ -2,15 +2,15 @@
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
 from py365.auth import AppConnection
-from py365.resources import User
+from py365.rsc import User
 
 
 class Users(object):
     """
-    You can use Microsoft Graph to build compelling app experiences based on users,
+    You can use Microsoft Graph365 to build compelling app experiences based on users,
     their relationships with other users and groups, and their mail, calendar, and files.
 
-    You can access users through Microsoft Graph in two ways:
+    You can access users through Microsoft Graph365 in two ways:
 
     * By their ID, /users/{id | userPrincipalName}
     * By using the /me alias for the signed-in user, which is the same as /users/{signed-in user's id}
