@@ -12,11 +12,11 @@ class InvitationManager(object):
     https://docs.microsoft.com/en-us/graph/api/resources/invitation
     """
 
-    def __init__( self, connection: AppConnection ):
+    def __init__(self, connection: AppConnection):
         self.__CREATE_INVITATION_ENDPOINT = '/invitations'
         self.connection = connection
 
-    def createInvitation( self, invitation: Invitation ):
+    def createInvitation(self, invitation: Invitation) -> Invitation:
         """
         https://docs.microsoft.com/en-us/graph/api/invitation-post
         :param invitation:

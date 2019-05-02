@@ -13,7 +13,7 @@ class EmailAddress(BaseResource):
     :type name: str
     """
 
-    def __init__( self, address: str, name: str ):
+    def __init__(self, address: str, name: str):
         BaseResource.__init__(self)
         self.address: str = address
         self.name: str = name

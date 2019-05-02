@@ -12,7 +12,7 @@ class AssignedLicense(BaseResource):
     :param skuId: The unique identifier for the SKU
     """
 
-    def __init__( self, disabledPlans: [uuid.UUID], skuId: uuid.UUID ):
+    def __init__(self, disabledPlans: [uuid.UUID], skuId: uuid.UUID):
         self.disabledPlans: [uuid.UUID] = disabledPlans
         self.skuId: uuid.UUID = skuId
         BaseResource.__init__(self)

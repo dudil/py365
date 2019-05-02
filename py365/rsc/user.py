@@ -21,38 +21,38 @@ class User(BaseResource):
     * Using delta query to track incremental additions, deletions, and updates, by providing a delta function.
     """
 
-    def __init__( self,
-                  aboutMe: str = None,
-                  accountEnabled: bool = None,
-                  birthday: datetime = None,
-                  businessPhones: [str] = None,
-                  city: str = None,
-                  companyName: str = None,
-                  country: str = None,
-                  createdDateTime: datetime = None,
-                  department: str = None,
-                  displayName: str = None,
-                  employeeId: str = None,
-                  faxNumber: str = None,
-                  givenName: str = None,
-                  hireDate: datetime = None,
-                  imAddresses: [str] = None,
-                  interests: [str] = None,
-                  otherMails: [str] = None,
-                  jobTitle: str = None,
-                  # licenseAssignmentStates: [\LicenseAssignmentState] = None,
-                  # assignedLicenses: [AssignedLicense] = None,
-                  # assignedPlans: [AssignedPlan] = None,
-                  # mailboxSettings: MailboxSettings = None,
-                  mail: str = None,
-                  mailNickname: str = None,
-                  mobilePhone: str = None,
-                  passwordProfile: PasswordProfile = None,
-                  usageLocation: str = None,
-                  officeLocation: str = None,
-                  surname: str = None,
-                  userPrincipalName: str = None,
-                  uid: str = None ):
+    def __init__(self,
+                 aboutMe: str = None,
+                 accountEnabled: bool = None,
+                 birthday: datetime = None,
+                 businessPhones: [str] = None,
+                 city: str = None,
+                 companyName: str = None,
+                 country: str = None,
+                 createdDateTime: datetime = None,
+                 department: str = None,
+                 displayName: str = None,
+                 employeeId: str = None,
+                 faxNumber: str = None,
+                 givenName: str = None,
+                 hireDate: datetime = None,
+                 imAddresses: [str] = None,
+                 interests: [str] = None,
+                 otherMails: [str] = None,
+                 jobTitle: str = None,
+                 # licenseAssignmentStates: [\LicenseAssignmentState] = None,
+                 # assignedLicenses: [AssignedLicense] = None,
+                 # assignedPlans: [AssignedPlan] = None,
+                 # mailboxSettings: MailboxSettings = None,
+                 mail: str = None,
+                 mailNickname: str = None,
+                 mobilePhone: str = None,
+                 passwordProfile: PasswordProfile = None,
+                 usageLocation: str = None,
+                 officeLocation: str = None,
+                 surname: str = None,
+                 userPrincipalName: str = None,
+                 uid: str = None):
         self.aboutMe: str = aboutMe
         self.accountEnabled: bool = accountEnabled
         self.birthday: datetime = birthday
@@ -83,7 +83,7 @@ class User(BaseResource):
         BaseResource.__init__(self)
 
     @classmethod
-    def userFromResponse( cls, userData: dict ):
+    def userFromResponse(cls, userData: dict):
         """
         create a user object from an OG operation response
         :param userData: the user data received from the OG operation

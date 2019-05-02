@@ -11,7 +11,7 @@ AUTHORITY_BASE_URL = "https://login.microsoftonline.com/"
 class AppConnection(object):
     """ Implementation of the Connection class using adal instead of OAuth """
 
-    def __init__( self, app_id, app_secret, tenant_id, resource=DEFAULT_RESOURCE, api_ver=DEFAULT_API_VER ):
+    def __init__(self, app_id, app_secret, tenant_id, resource=DEFAULT_RESOURCE, api_ver=DEFAULT_API_VER):
         # TODO parameter verification!!!
         self.app_id = app_id
         self.app_secret = app_secret
@@ -21,9 +21,9 @@ class AppConnection(object):
         self.session = None
 
     # TODO: Move to Utils Package
-    def get_api_url( self, endpoint: str ):
+    def get_api_url(self, endpoint: str):
         """Convert a relative path such as /me/photo/$value to a full URI
-        This is much easier to work with how MS are actually documanting their API
+        This is much easier to work with how MS are actually documenting their API
         """
         if urllib.parse.urlparse(endpoint).scheme in ['http', 'https']:
             return endpoint  # url is already complete
@@ -44,7 +44,7 @@ class AppConnection(object):
         response = self.session.get(url, params=params)
         return response
 
-    def post( self, endpoint, json: dict = None ):
+    def post(self, endpoint, json: dict = None):
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()
@@ -52,7 +52,7 @@ class AppConnection(object):
         response = self.session.post(url, json=json)
         return response
 
-    def patch( self, endpoint, json: dict ):
+    def patch(self, endpoint, json: dict):
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()

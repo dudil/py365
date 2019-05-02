@@ -13,14 +13,14 @@ class PasswordProfile(BaseResource):
     :param forceChangePasswordNextSignInWithMfa: should the next sign will be with MFA
     """
 
-    def __init__( self, forceChangePasswordNextSignIn: bool = None, password: str = None
-                  , forceChangePasswordNextSignInWithMfa: bool = None ):
+    def __init__(self, forceChangePasswordNextSignIn: bool = None, password: str = None
+                 , forceChangePasswordNextSignInWithMfa: bool = None):
         self.forceChangePasswordNextSignIn: bool = forceChangePasswordNextSignIn
         self.password: str = password
         self.forceChangePasswordNextSignInWithMfa: bool = forceChangePasswordNextSignInWithMfa
         BaseResource.__init__(self)
 
-    def generateRandomPassword( self, pwLen: int = 10 ):
+    def generateRandomPassword(self, pwLen: int = 10):
         """
         Generate Random Password to use
         :param pwLen: the password length (optional)
