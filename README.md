@@ -41,10 +41,10 @@ g365.users.createUser(newUser=user)
 - [x] Create User (Partially)
 - [x] Get User (Partially)
 - [x] Update user (Partially)
-- [ ] Guest Invite
+- [X] Send email
+- [X] Guest Invite
 
-## What left to do? (not by priority by any mean)
-- [ ] Send email
+## What is next? (ATM)
 - [ ] Modify online excel
 - [ ] Get Planner tasks
 - [ ] Add unit testings
