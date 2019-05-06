@@ -37,16 +37,22 @@ g365.users.createUser(newUser=user)
 
 ```
 
-## API implemented
-- [x] Create User (Partially)
-- [x] Get User (Partially)
-- [x] Update user (Partially)
-- [X] Send email
-- [X] Guest Invite
+## API implemented (Basic)
+-[x] Create User
+-[x] Get User
+-[x] Update user
+-[X] Send email
+-[X] Guest Invite
 
 ## What is next? (ATM)
-- [ ] Modify online excel
-- [ ] Get Planner tasks
-- [ ] Add unit testings
+-[ ] Online excel API
+-[ ] Get Planner tasks
+-[ ] Add unit testings
+-[ ] Replace [ADAL](https://github.com/AzureAD/azure-activedirectory-library-for-python)
+ with [MSAL](https://github.com/AzureAD/microsoft-authentication-library-for-python) for authentication
+-[ ] Check for version with APIs
+-[ ] Check for sufficient authority (permissions) before calling an API
+-[ ] Check response type and handle errors
+
 
 

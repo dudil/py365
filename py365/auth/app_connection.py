@@ -20,6 +20,10 @@ class AppConnection(object):
         self.api_base_url = f'{self.resource}/{api_ver}/'
         self.session = None
 
+    def verifyPermissions(self, permissions:[str]):
+        # TODO: check we indeed have the required permissions
+        pass
+
     # TODO: Move to Utils Package
     def get_api_url(self, endpoint: str):
         """Convert a relative path such as /me/photo/$value to a full URI
@@ -36,7 +40,8 @@ class AppConnection(object):
         self.session.headers.update({'Authorization': f'Bearer {token["accessToken"]}',
                                      'Content-type': 'application/json'})
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint: str, params=None, permissions:[str]=None):
+        self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()
@@ -44,7 +49,8 @@ class AppConnection(object):
         response = self.session.get(url, params=params)
         return response
 
-    def post(self, endpoint, json: dict = None):
+    def post(self, endpoint: str, json: dict = None, permissions:[str]=None):
+        self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()
@@ -52,7 +58,8 @@ class AppConnection(object):
         response = self.session.post(url, json=json)
         return response
 
-    def patch(self, endpoint, json: dict):
+    def patch(self, endpoint: str, json: dict, permissions:[str]=None):
+        self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:
             self.authenticate()

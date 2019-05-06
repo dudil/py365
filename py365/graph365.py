@@ -18,3 +18,4 @@ class Graph365:
 
         self.users = api.Users(connection=connection)
         self.invitations = api.InvitationManager(connection=connection)
+        self.planner = api.Planner(connection=connection)

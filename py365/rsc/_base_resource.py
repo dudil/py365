@@ -1,4 +1,7 @@
+from datetime import datetime
 from enum import Enum
+
+from py365.utils import datetimeToStr, datetimeFromStr
 
 
 class BaseResource(object):
@@ -20,6 +23,8 @@ class BaseResource(object):
                     payloadItem = BaseResource.payloadValue(i)
                     payloadList.append(payloadItem)
                 return payloadList
+            elif isinstance(val, datetime):
+                return datetimeToStr(val)
             else:
                 return val
         else:
@@ -38,3 +43,20 @@ class BaseResource(object):
                 payload.update({key: payloadVal})
 
         return payload
+
+    @classmethod
+    def fromResponse(cls, retObj: object, data: dict):
+        print(cls)
+        attributes = vars(retObj)
+        for key, val in attributes.items():
+            dataVal = data.get(key, None)
+            if isinstance(val, BaseResource):
+                val = BaseResource.fromResponse(val, dataVal)
+            elif isinstance(val, datetime):
+                val = datetimeFromStr(dataVal)
+            else:
+                val = dataVal
+
+            setattr(retObj, key, val)
+
+        return retObj

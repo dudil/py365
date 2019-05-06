@@ -7,5 +7,8 @@ from .recipient import Recipient
 from .user import User
 from .message import BaseMessage
 from .item_body import ItemBody
+from .planner_applied_categories import PlannerAppliedCategories
+from .planner_task import PlannerTask
+from .identity import Identity
 
 name = "py365.rsc"

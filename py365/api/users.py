@@ -3,7 +3,6 @@ https://docs.microsoft.com/en-us/graph/api/resources/users
 """
 from py365 import auth, rsc
 
-
 class Users(object):
     """
     You can use Microsoft Graph365 to build compelling app experiences based on users,
@@ -108,7 +107,7 @@ class Users(object):
         :return: a User API object that will handle a specific user API operations
         :rtype: Users -> User subclass
         """
-        userAPI = self.User(connection=self.connection, userKey=userKey)
+        userAPI = Users.User(connection=self.connection, userKey=userKey)
         return userAPI
 
     def createUser(self, newUser: rsc.User) -> rsc.User:
