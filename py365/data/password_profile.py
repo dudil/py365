@@ -1,24 +1,16 @@
 """ https://docs.microsoft.com/en-us/graph/api/resources/passwordprofile?view=graph-rest-1.0 """
 import random
 import string
+import attr
 
-from ._base_resource import BaseResource
+from ._base_data import BaseData
 
 
-class PasswordProfile(BaseResource):
-    """
-    Password profile OG resource - use to set a password and password behaviour for users
-    :param forceChangePasswordNextSignIn: should the user change the password upon first login
-    :param password: the user password
-    :param forceChangePasswordNextSignInWithMfa: should the next sign will be with MFA
-    """
-
-    def __init__(self, forceChangePasswordNextSignIn: bool = None, password: str = None
-                 , forceChangePasswordNextSignInWithMfa: bool = None):
-        self.forceChangePasswordNextSignIn: bool = forceChangePasswordNextSignIn
-        self.password: str = password
-        self.forceChangePasswordNextSignInWithMfa: bool = forceChangePasswordNextSignInWithMfa
-        BaseResource.__init__(self)
+@attr.s(auto_attribs=True)
+class PasswordProfile(BaseData):
+    forceChangePasswordNextSignIn: bool = None
+    password: str = None
+    forceChangePasswordNextSignInWithMfa: bool = None
 
     def generateRandomPassword(self, pwLen: int = 10):
         """

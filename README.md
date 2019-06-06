@@ -22,7 +22,7 @@ $ pip install py365
 
 ```python
 # Graph365 is the main access point to the MS Graph
-# rsc is the graph resources we use to feed the graph API
+data
 from py365 import Graph365, rsc
 
 #Connect to the tenant

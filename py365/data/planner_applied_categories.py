@@ -1,25 +1,25 @@
 # Resource documentation:
 # https://docs.microsoft.com/en-us/graph/api/resources/plannerappliedcategories?view=graph-rest-1.0
-from ._base_resource import BaseResource
+import attr
+from ._base_data import BaseData
 
 
-class PlannerAppliedCategories(BaseResource):
+@attr.s(auto_attribs=True)
+class PlannerAppliedCategories(BaseData):
     """
     The AppliedCategoriesCollection resource represents the collection of categories (or labels)
     that have been applied to a task. It is part of the plannerTask object.
     There can be up to 6 categories applied to a task. Category descriptions, e.g. category1, category2 etc.,
     are part of the plan details object. This is an open type.
     """
+    category1: bool = False
+    category2: bool = False
+    category3: bool = False
+    category4: bool = False
+    category5: bool = False
+    category6: bool = False
 
-    def __init__(self):
-        self.category1: bool = False
-        self.category2: bool = False
-        self.category3: bool = False
-        self.category4: bool = False
-        self.category5: bool = False
-        self.category6: bool = False
-        BaseResource.__init__(self)
-
+    '''
     @classmethod
     def fromResponse(cls, retObj: object, data: dict):
         plannerAppliedCategories = cls()
@@ -45,3 +45,4 @@ class PlannerAppliedCategories(BaseResource):
                 payload.update({key: val})
 
         return payload
+    '''

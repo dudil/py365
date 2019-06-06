@@ -1,7 +1,8 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
-from py365 import auth, rsc
+from py365 import auth, data
+
 
 class Users(object):
     """
@@ -25,7 +26,7 @@ class Users(object):
             self.userKey = userKey
             self.__USER_ENDPOINT = f'/users/{userKey}'
 
-        def getUser(self) -> rsc.User:
+        def getUser(self) -> data.User:
             """
             https://docs.microsoft.com/en-us/graph/api/user-get
             Retrieve the properties and relationships of user object.
@@ -37,13 +38,14 @@ class Users(object):
             response = self.connection.get(lookupEndpoint)
             if response.ok:
                 respJson = response.json()
-                user = rsc.User.userFromResponse(respJson)
+                user = data.User()
+                user.fromResponse(respJson)
                 return user
             else:
                 print(f'Request Error{response.text}')
                 return None
 
-        def updateUser(self, userData: rsc.User) -> rsc.User:
+        def updateUser(self, userData: data.User):
             """
             https://docs.microsoft.com/en-us/graph/api/user-update
             Update the properties of a user object.
@@ -54,17 +56,14 @@ class Users(object):
             :rtype:
             """
             endpoint = self.__USER_ENDPOINT
-            response = self.connection.patch(endpoint, userData.payload)
+            response = self.connection.patch(endpoint, userData.json)
 
             if response.ok:
-                respJson = response.json()
-                user = rsc.User.userFromResponse(respJson)
-                return user
+                print(f'updateUser Request OK!')
             else:
-                print(f'Request Error{response.text}')
-                return None
+                print(f'updateUser Request Error{response.text}')
 
-        def sendMail(self, message: rsc.BaseMessage, saveToSentItems: bool = True):
+        def sendMail(self, message: data.BaseMessage, saveToSentItems: bool = True):
             """
             https://docs.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0
             send mail from the user inbox
@@ -78,7 +77,7 @@ class Users(object):
             """
             endpoint = self.__USER_ENDPOINT + '/sendMail'
             payload = {
-                "message": message.payload,
+                "message": message.json,
                 "saveToSentItems": saveToSentItems
             }
             response = self.connection.post(endpoint=endpoint, json=payload)
@@ -97,7 +96,7 @@ class Users(object):
     def user(self, userKey: str) -> User:
         """
         This method represent a user API edge following the Users edge
-        NB! Not to confuse with the rsc.User class which is critical to the graph operation.
+        NB! Not to confuse with the data.User class which is critical to the graph operation.
         Why MS decided on that (kind of strange) flow, is not very clear to me.
         A better design would be probably to make the User API as major instead of Users/UserID
         Users, would match better a group of users where the default group is all.
@@ -110,7 +109,7 @@ class Users(object):
         userAPI = Users.User(connection=self.connection, userKey=userKey)
         return userAPI
 
-    def createUser(self, newUser: rsc.User) -> rsc.User:
+    def createUser(self, newUser: data.User) -> data.User:
         """
         https://docs.microsoft.com/en-us/graph/api/user-post-users
         Use this API to create a new User. The request body contains the user to create.
@@ -129,13 +128,30 @@ class Users(object):
         assert (newUser.userPrincipalName is not None)
         assert (newUser.passwordProfile is not None)
 
-        json = newUser.payload
+        json = newUser.json
         response = self.connection.post(endpoint=endpoint, json=json)
 
         if response.ok:
             respJson = response.json()
-            user = rsc.User.userFromResponse(respJson)
+            user = data.User()
+            user.fromResponse(data=respJson)
             return user
+        else:
+            print(f'Request Error{response.text}')
+            return None
+
+    def listUsers(self) -> [data.User]:
+        endpoint = self.__USERS_ENDPOINT
+        response = self.connection.get(endpoint=endpoint)
+        if response.ok:
+            respData = response.json()
+            usersData = respData.get("value")
+            users = []
+            for userData in usersData:
+                user = data.User()
+                user.fromResponse(data=userData)
+                users.append(user)
+            return users
         else:
             print(f'Request Error{response.text}')
             return None

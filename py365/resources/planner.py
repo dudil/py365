@@ -1,6 +1,6 @@
 # API Reference
 # https://docs.microsoft.com/en-us/graph/api/resources/planner-overview?view=graph-rest-1.0
-from py365 import auth, rsc
+from py365 import auth, data
 
 
 class Planner(object):
@@ -29,13 +29,15 @@ class Planner(object):
                 respJson = response.json()
                 tasks = []
                 for taskData in respJson:
-                    task = rsc.PlannerTask.fromResponse(retObj=None, data=taskData)
+                    task = data.PlannerTask()
+                    task.fromResponse(data=taskData)
                     tasks.append(task)
                 return tasks
             else:
                 print(f'Request Error{response.text}')
                 return None
 
+        '''
         def getPlannerPlan(self):
             permissions = ["Group.Read.All", "Group.ReadWrite.All"]
             endpoint = self.__PLAN_ENDPOINT
@@ -44,15 +46,16 @@ class Planner(object):
             if response.ok:
                 respJson = response.json()
                 plans = []
-                '''
+                
                 for planData in respJson:
-                    plan = rsc.PlannerPlan.fromResponse(retObj=None, data=planData)
+                    plan = data.PlannerPlan.fromResponse(retObj=None, data=planData)
                     plan.append(plan)
                 return plans
-                '''
+                
             else:
                 print(f'Request Error{response.text}')
                 return None
+        '''
 
     def __init__(self, connection: auth.AppConnection):
         self.connection: auth.AppConnection = connection
@@ -61,6 +64,3 @@ class Planner(object):
     def plans(self, planID) -> Plans:
         plansAPI = Planner.Plans(connection=self.connection, planID=planID)
         return plansAPI
-
-
-

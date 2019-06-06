@@ -1,14 +1,14 @@
 from .assigned_license import AssignedLicense
 from .email_address import EmailAddress
+from .identity import Identity
 from .invitation import Invitation
 from .invited_user_message_info import InvitedUserMessageInfo
-from .password_profile import PasswordProfile
-from .recipient import Recipient
-from .user import User
-from .message import BaseMessage
 from .item_body import ItemBody
+from .message import BaseMessage
+from .password_profile import PasswordProfile
 from .planner_applied_categories import PlannerAppliedCategories
 from .planner_task import PlannerTask
-from .identity import Identity
+from .recipient import Recipient
+from .user import User
 
-name = "py365.rsc"
+name = "py365.data"

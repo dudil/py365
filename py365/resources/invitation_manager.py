@@ -3,8 +3,8 @@
 
 
 from py365.auth import AppConnection
+from py365.data import Invitation
 from py365.enums import InvitationStatusValues
-from py365.rsc import Invitation
 
 
 class InvitationManager(object):
@@ -25,10 +25,10 @@ class InvitationManager(object):
         :rtype:
         """
         response = self.connection.post(
-            self.__CREATE_INVITATION_ENDPOINT, json=invitation.payload)
+            self.__CREATE_INVITATION_ENDPOINT, json=invitation.json)
         # TODO check for valid response
-        invitation.redeem_url = response.json().get("inviteRedeemUrl", None)
-        invitation._status = response.json().get("status", InvitationStatusValues.ERROR)
-        invitation._invited_user = response.json().get("invitedUser", None)
+        invitation.inviteRedeemUrl = response.json().get("inviteRedeemUrl", None)
+        invitation.status = response.json().get("status", InvitationStatusValues.ERROR)
+        invitation.invitedUser = response.json().get("invitedUser", None)
 
         return invitation

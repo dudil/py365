@@ -18,9 +18,9 @@ class AppConnection(object):
         self.resource = resource
         self.authority = f'{AUTHORITY_BASE_URL}{tenant_id}'
         self.api_base_url = f'{self.resource}/{api_ver}/'
-        self.session = None
+        self.session: requests.Session = None
 
-    def verifyPermissions(self, permissions:[str]):
+    def verifyPermissions(self, permissions: [str]):
         # TODO: check we indeed have the required permissions
         pass
 
@@ -36,11 +36,11 @@ class AppConnection(object):
     def authenticate(self):
         context = AuthenticationContext(self.authority)
         token = context.acquire_token_with_client_credentials(self.resource, self.app_id, self.app_secret)
-        self.session = requests.Session()
+        self.session: requests.Session = requests.Session()
         self.session.headers.update({'Authorization': f'Bearer {token["accessToken"]}',
                                      'Content-type': 'application/json'})
 
-    def get(self, endpoint: str, params=None, permissions:[str]=None):
+    def get(self, endpoint: str, params=None, permissions: [str] = None):
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:
@@ -49,7 +49,7 @@ class AppConnection(object):
         response = self.session.get(url, params=params)
         return response
 
-    def post(self, endpoint: str, json: dict = None, permissions:[str]=None):
+    def post(self, endpoint: str, json: dict = None, permissions: [str] = None):
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:
@@ -58,7 +58,7 @@ class AppConnection(object):
         response = self.session.post(url, json=json)
         return response
 
-    def patch(self, endpoint: str, json: dict, permissions:[str]=None):
+    def patch(self, endpoint: str, json: dict, permissions: [str] = None):
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         if self.session is None:

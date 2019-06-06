@@ -1,42 +1,42 @@
 # Resource documentation:
 # https://docs.microsoft.com/en-us/graph/api/resources/plannertask?view=graph-rest-1.0
+import attr
 from datetime import datetime
 
+from . import PlannerAppliedCategories
+from ._base_data import BaseData
 from .identity import Identity
 from .planner_assignment import PlannerAssignment
-from py365.utils import datetimeFromStr
-
-from ._base_resource import BaseResource
-from . import PlannerAppliedCategories
 
 
-class PlannerTask(BaseResource):
+# from py365.utils import datetimeFromStr
 
-    def __init__(self):
-        self.activeChecklistItemCount: int = None
-        self.appliedCategories: PlannerAppliedCategories = None
-        self.assigneePriority: str = None
-        self.assignments: [PlannerAssignment] = None
-        self.bucketId: str = None
-        self.checklistItemCount: int = None
-        self.completedBy: [Identity] = []
-        self.completedDateTime: datetime = None
-        self.conversationThreadId: str = None
-        self.createdBy: [Identity] = None
-        self.createdDateTime: datetime = None
-        self.dueDateTime: datetime = None
-        self.hasDescription: bool = None
-        self.id: str = None
-        self.orderHint: str = None
-        self.percentComplete: int = None
-        self.planId: str = None
-        # self.previewType: PreviewType
-        self.referenceCount: int = None
-        self.startDateTime: datetime = None
-        self.title: str = None
 
-        BaseResource.__init__(self)
+@attr.s(auto_attribs=True)
+class PlannerTask(BaseData):
+    activeChecklistItemCount: int = None
+    appliedCategories: PlannerAppliedCategories = None
+    assigneePriority: str = None
+    assignments: [PlannerAssignment] = None
+    bucketId: str = None
+    checklistItemCount: int = None
+    completedBy: [Identity] = None
+    completedDateTime: datetime = None
+    conversationThreadId: str = None
+    createdBy: [Identity] = None
+    createdDateTime: datetime = None
+    dueDateTime: datetime = None
+    hasDescription: bool = None
+    id: str = None
+    orderHint: str = None
+    percentComplete: int = None
+    planId: str = None
+    # previewType: PreviewType
+    referenceCount: int = None
+    startDateTime: datetime = None
+    title: str = None
 
+    '''
     @classmethod
     def fromResponse(cls, retObj: object, data: dict):
         task = cls()
@@ -73,3 +73,4 @@ class PlannerTask(BaseResource):
         task.title = data.get("title")
 
         return task
+    '''

@@ -1,4 +1,4 @@
-from py365 import auth, api
+from py365 import auth, resources
 
 
 class Graph365:
@@ -16,6 +16,6 @@ class Graph365:
             app_id=appId, app_secret=appSecret, tenant_id=tenantId)
         self.connection = connection
 
-        self.users = api.Users(connection=connection)
-        self.invitations = api.InvitationManager(connection=connection)
-        self.planner = api.Planner(connection=connection)
+        self.users = resources.Users(connection=connection)
+        self.invitations = resources.InvitationManager(connection=connection)
+        self.planner = resources.Planner(connection=connection)
