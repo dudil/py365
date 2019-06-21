@@ -19,3 +19,4 @@ class Graph365:
         self.users = resources.Users(connection=connection)
         self.invitations = resources.InvitationManager(connection=connection)
         self.planner = resources.Planner(connection=connection)
+        self.groups = resources.Groups(connection=connection)

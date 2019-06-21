@@ -9,8 +9,8 @@ from py365.utils import datetimeFromStr, datetimeToStr
 @attr.s
 class BaseData:
     """
-    Represent a base resource on the OG
-    Every OG resource class should inherit from this class
+    Represent a base data on the OG
+    Every OG data class should inherit from this class
     """
 
     @staticmethod

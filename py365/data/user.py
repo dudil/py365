@@ -3,7 +3,6 @@ https://docs.microsoft.com/en-us/graph/api/resources/user
 """
 import attr
 import datetime
-
 from ._base_data import BaseData
 from .password_profile import PasswordProfile
 

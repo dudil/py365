@@ -10,5 +10,9 @@ from .planner_applied_categories import PlannerAppliedCategories
 from .planner_task import PlannerTask
 from .recipient import Recipient
 from .user import User
+from .on_premises_provisioning_error import OnPremisesProvisioningError
+from .group import Group
+from .directory_object import DirectoryObject
+from .planner_plan import PlannerPlan
 
 name = "py365.data"

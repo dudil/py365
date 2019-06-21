@@ -2,9 +2,10 @@
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
 from py365 import auth, data
+from ._base_resource import BaseResource
 
 
-class Users(object):
+class Users(BaseResource):
     """
     You can use Microsoft Graph365 to build compelling app experiences based on users,
     their relationships with other users and groups, and their mail, calendar, and files.
@@ -15,16 +16,15 @@ class Users(object):
     * By using the /me alias for the signed-in user, which is the same as /users/{signed-in user's id}
     """
 
-    class User(object):
+    class User(BaseResource):
         """
         Class User is the user edge related to user operations
         """
 
         # user key can be either id or login mail
         def __init__(self, connection: auth.AppConnection, userKey: str):
-            self.connection = connection
             self.userKey = userKey
-            self.__USER_ENDPOINT = f'/users/{userKey}'
+            BaseResource.__init__(self, connection=connection, endpoint=f'/users/{userKey}')
 
         def getUser(self) -> data.User:
             """
@@ -34,16 +34,15 @@ class Users(object):
             :return: the found user object
             :rtype: User
             """
-            lookupEndpoint = self.__USER_ENDPOINT
-            response = self.connection.get(lookupEndpoint)
+
+            user: data.User = data.User()
+            response = self.connection.get(self.ENDPOINT)
             if response.ok:
                 respJson = response.json()
-                user = data.User()
                 user.fromResponse(respJson)
-                return user
             else:
                 print(f'Request Error{response.text}')
-                return None
+            return user
 
         def updateUser(self, userData: data.User):
             """
@@ -55,8 +54,7 @@ class Users(object):
             :return:
             :rtype:
             """
-            endpoint = self.__USER_ENDPOINT
-            response = self.connection.patch(endpoint, userData.json)
+            response = self.connection.patch(self.ENDPOINT, userData.json)
 
             if response.ok:
                 print(f'updateUser Request OK!')
@@ -75,7 +73,7 @@ class Users(object):
             :return: call response
             :rtype: Response
             """
-            endpoint = self.__USER_ENDPOINT + '/sendMail'
+            endpoint = self.ENDPOINT + '/sendMail'
             payload = {
                 "message": message.json,
                 "saveToSentItems": saveToSentItems
@@ -90,8 +88,7 @@ class Users(object):
         :param connection: graph connection
         :type connection: AppConnection
         """
-        self.__USERS_ENDPOINT = '/users/'
-        self.connection = connection
+        BaseResource.__init__(self, connection=connection, endpoint='/users/')
 
     def user(self, userKey: str) -> User:
         """
@@ -120,7 +117,6 @@ class Users(object):
         :return:
         :rtype:
         """
-        endpoint = self.__USERS_ENDPOINT
 
         assert (newUser.accountEnabled is not None)
         assert (newUser.displayName is not None)
@@ -128,21 +124,20 @@ class Users(object):
         assert (newUser.userPrincipalName is not None)
         assert (newUser.passwordProfile is not None)
 
+        user: data.User = data.User()
         json = newUser.json
-        response = self.connection.post(endpoint=endpoint, json=json)
+        response = self.connection.post(endpoint=self.ENDPOINT, json=json)
 
         if response.ok:
             respJson = response.json()
-            user = data.User()
             user.fromResponse(data=respJson)
-            return user
         else:
             print(f'Request Error{response.text}')
-            return None
+
+        return user
 
     def listUsers(self) -> [data.User]:
-        endpoint = self.__USERS_ENDPOINT
-        response = self.connection.get(endpoint=endpoint)
+        response = self.connection.get(endpoint=self.ENDPOINT)
         if response.ok:
             respData = response.json()
             usersData = respData.get("value")
