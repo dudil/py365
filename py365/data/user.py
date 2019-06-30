@@ -3,12 +3,12 @@ https://docs.microsoft.com/en-us/graph/api/resources/user
 """
 import attr
 import datetime
-from ._base_data import BaseData
+from .directory_object import DirectoryObject
 from .password_profile import PasswordProfile
 
 
 @attr.s(auto_attribs=True)
-class User(BaseData):
+class User(DirectoryObject):
     """
     # user resource type
 
@@ -47,4 +47,3 @@ class User(BaseData):
     officeLocation: str = None
     surname: str = None
     userPrincipalName: str = None
-    id: str = None

@@ -15,7 +15,7 @@ class BaseData:
 
     @staticmethod
     def jsonVal(val: any) -> any:
-        if val:
+        if val is not None:
             if isinstance(val, BaseData):
                 return val.json
             elif isinstance(val, Enum):
@@ -41,7 +41,7 @@ class BaseData:
         data = self.__dict__
         ret: dict = {}
         for key, val in data.items():
-            if val:
+            if val is not None:
                 payloadVal = BaseData.jsonVal(val)
                 ret.update({key: payloadVal})
 

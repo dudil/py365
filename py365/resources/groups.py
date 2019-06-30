@@ -34,8 +34,94 @@ class Groups(BaseResource):
                     plans.append(plan)
                 return plans
             else:
-                print(f'Request Error{response.text}')
+                print(f'Request Error {response.text}')
                 return None
+
+        def updateGroup(self, updateData: data.Group) -> bool:
+            json = updateData.json
+            response = self.connection.patch(endpoint=self.ENDPOINT, json=json)
+
+            if response.ok:
+                retCode = True
+            else:
+                print(f'Request Error {response.text}')
+                retCode = False
+
+            return retCode
+
+        def _listUsers(self, userType: enums.GroupUserTypes) -> [data.DirectoryObject]:
+            endpoint = self.ENDPOINT
+            if userType is enums.GroupUserTypes.MEMBER:
+                endpoint += '/members'
+            elif userType is enums.GroupUserTypes.OWNER:
+                endpoint += '/owners'
+            else:
+                raise Exception(f"Not supported user type: {type}")
+
+            response = self.connection.get(endpoint=endpoint)
+            users: [data.DirectoryObject] = []
+            if response.ok:
+                dirObjects = response.json().get("value")
+                for dirObject in dirObjects:
+                    user = data.DirectoryObject()
+                    user.fromResponse(data=dirObject)
+                    users.append(user)
+            else:
+                print(f'Request Error {response.text}')
+
+            return users
+
+        def listMembers(self) -> [data.DirectoryObject]:
+            """
+            https://docs.microsoft.com/en-us/graph/api/group-list-members
+            :return:
+            :rtype:
+            """
+            return self._listUsers(enums.GroupUserTypes.MEMBER)
+
+        def listOwners(self) -> [data.DirectoryObject]:
+            """
+            https://docs.microsoft.com/en-us/graph/api/group-list-owners
+            :return:
+            :rtype:
+            """
+            return self._listUsers(enums.GroupUserTypes.Owner)
+
+        def _addUser(self, userType: enums.GroupUserTypes, user: data.DirectoryObject):
+            endpoint = self.ENDPOINT
+            if userType is enums.GroupUserTypes.MEMBER:
+                endpoint += '/members/$ref'
+            elif userType is enums.GroupUserTypes.OWNER:
+                endpoint += '/owners/$ref'
+            else:
+                raise Exception(f"Not supported user type: {type}")
+
+            json = {"@odata.id": user.odata_id}
+            response = self.connection.post(endpoint=endpoint, json=json)
+            if response.ok:
+                pass
+            else:
+                print(f'Request Error {response.text}')
+
+        def addMember(self, member: data.DirectoryObject):
+            """
+            https://docs.microsoft.com/en-us/graph/api/group-post-members
+            :param member:
+            :type member:
+            :return:
+            :rtype:
+            """
+            self._addUser(enums.GroupUserTypes.MEMBER, member)
+
+        def addOwner(self, owner: data.DirectoryObject):
+            """
+            https://docs.microsoft.com/en-us/graph/api/group-post-owners
+            :param owner:
+            :type owner:
+            :return:
+            :rtype:
+            """
+            self._addUser(enums.GroupUserTypes.OWNER, owner)
 
     def __init__(self, connection: auth.AppConnection):
         BaseResource.__init__(self, connection, '/groups')
@@ -53,31 +139,35 @@ class Groups(BaseResource):
         #  assert(newGroup.members is not None)  # The members for the group at creation time. Optional.
         assert (newGroup.groupTypes is not None)  # Control the type of group and its membership
 
+        members = newGroup.members
+        membersDataList = [m.odata_id for m in members]
+        owners = newGroup.owners
+        ownersDataList = [o.odata_id for o in owners]
+        newGroup.members = None
+        newGroup.owners = None
         json = newGroup.json
+
+        json.update({"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList})
         response = self.connection.post(endpoint=self.ENDPOINT, json=json)
 
-        group: data.Group = data.Group()
         if response.ok:
             respJson = response.json()
-            group.fromResponse(data=respJson)
+            newGroup.fromResponse(data=respJson)
         else:
-            print(f'Request Error{response.text}')
+            print(f'Request Error {response.text}')
 
-        return group
+        return newGroup
 
     def createGroupByCategory(self, groupCategory: enums.GroupCategory, displayName: str, mailNickname: str
                               , visibility: enums.GroupVisibility, owners: [data.DirectoryObject]
-                              , members: [data.DirectoryObject] = None, description: str = None
-                              , allowExternalSenders: bool = False, isSubscribedByMail: bool = True) -> data.Group:
+                              , members: [data.DirectoryObject] = None, description: str = None) -> data.Group:
         newGroup = data.Group()
         newGroup.category = groupCategory
         newGroup.displayName = displayName
         newGroup.mailNickname = mailNickname
         newGroup.owners = owners
         newGroup.members = members
-        newGroup.allowExternalSenders = allowExternalSenders
         newGroup.description = description
-        newGroup.isSubscribedByMail = isSubscribedByMail
         newGroup.visibility = visibility
 
         return self.createGroup(newGroup=newGroup)
@@ -100,5 +190,5 @@ class Groups(BaseResource):
                 groups.append(group)
             return groups
         else:
-            print(f'Request Error{response.text}')
+            print(f'Request Error {response.text}')
             return None

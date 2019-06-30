@@ -1,6 +1,7 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
+import urllib.parse
 from py365 import auth, data
 from ._base_resource import BaseResource
 
@@ -36,7 +37,9 @@ class Users(BaseResource):
             """
 
             user: data.User = data.User()
-            response = self.connection.get(self.ENDPOINT)
+            endpoint = self.ENDPOINT
+            endpoint = urllib.parse.quote(endpoint)
+            response = self.connection.get(endpoint)
             if response.ok:
                 respJson = response.json()
                 user.fromResponse(respJson)

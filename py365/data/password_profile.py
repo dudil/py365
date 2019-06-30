@@ -12,7 +12,7 @@ class PasswordProfile(BaseData):
     password: str = None
     forceChangePasswordNextSignInWithMfa: bool = None
 
-    def generateRandomPassword(self, pwLen: int = 10):
+    def generateRandomPassword(self, pwLen: int = 10) -> str:
         """
         Generate Random Password to use
         :param pwLen: the password length (optional)
@@ -29,3 +29,4 @@ class PasswordProfile(BaseData):
         random.SystemRandom().shuffle(passwordList)
         password = ''.join(passwordList)
         self.password = password
+        return password

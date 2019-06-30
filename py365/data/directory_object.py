@@ -12,3 +12,7 @@ class DirectoryObject(BaseData):
     """
 
     id: str = None
+
+    @property
+    def odata_id(self) -> str:
+        return f"https://graph.microsoft.com/v1.0/directoryObjects/{self.id}"
