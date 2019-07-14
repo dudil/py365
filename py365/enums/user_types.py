@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class InvitedUserTypes(Enum):
+class UserTypes(Enum):
     """
     Enum to represent rhw different user types we can invite
     """

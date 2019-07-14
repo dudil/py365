@@ -1,6 +1,6 @@
 import attr
 
-from py365.enums import InvitationStatusValues, InvitedUserTypes
+from py365.enums import InvitationStatusValues, UserTypes
 
 from ._base_data import BaseData
 from .user import User
@@ -17,6 +17,6 @@ class Invitation(BaseData):
     invitedUser: User = None
     status: InvitationStatusValues = InvitationStatusValues.ERROR
     sendInvitationMessage: bool = True
-    invitedUserType: InvitedUserTypes = InvitedUserTypes.GUEST
+    invitedUserType: UserTypes = UserTypes.GUEST
     inviteRedirectUrl: str = "https://office.com"
     # invitedUserMessageInfo : InvitedUserMessageInfo

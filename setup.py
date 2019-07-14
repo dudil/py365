@@ -1,6 +1,6 @@
 import setuptools
 
-VERSION = '0.1.2'
+VERSION = '0.1.5'
 
 CLASSIFIERS = [
     'License :: OSI Approved :: MIT License',
@@ -11,8 +11,10 @@ CLASSIFIERS = [
 
 REQUIRES = [
     'adal >= 1.2.1',
+    'msal >= 0.5.0',
     'requests >= 2.21.0',
     'urllib3 >= 1.24.2',
+    'attrs >= 19.1.0',
 ]
 
 with open("README.md", "r") as fh:

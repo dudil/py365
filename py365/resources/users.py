@@ -85,6 +85,26 @@ class Users(BaseResource):
 
             return response
 
+        def getMemberGroups(self, securityEnabledOnly: bool = False) -> [str]:
+            """
+            https://docs.microsoft.com/en-us/graph/api/user-getmembergroups?view=graph-rest-1.0
+            :return:
+            :rtype:
+            """
+
+            endpoint = self.ENDPOINT + '/getMemberGroups'
+            payload = {
+                "securityEnabledOnly": securityEnabledOnly
+            }
+            response = self.connection.post(endpoint=endpoint, json=payload)
+            groups: [str] = []
+            if response.ok:
+                groups = response.json().get("value")
+            else:
+                print(f'Request Error {response.text}')
+
+            return groups
+
     def __init__(self, connection: auth.AppConnection):
         """
         Initialisation method for the *Users* class

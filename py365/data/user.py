@@ -5,6 +5,7 @@ import attr
 import datetime
 from .directory_object import DirectoryObject
 from .password_profile import PasswordProfile
+from py365.enums import UserTypes
 
 
 @attr.s(auto_attribs=True)
@@ -47,3 +48,4 @@ class User(DirectoryObject):
     officeLocation: str = None
     surname: str = None
     userPrincipalName: str = None
+    userType: UserTypes = None
