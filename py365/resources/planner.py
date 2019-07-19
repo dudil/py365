@@ -28,7 +28,7 @@ class Planner(BaseResource):
             if response.ok:
                 respJson = response.json()
                 tasks = []
-                for taskData in respJson:
+                for taskData in respJson["value"]:
                     task = data.PlannerTask()
                     task.fromResponse(data=taskData)
                     tasks.append(task)
