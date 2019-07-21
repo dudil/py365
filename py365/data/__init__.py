@@ -14,5 +14,6 @@ from .on_premises_provisioning_error import OnPremisesProvisioningError
 from .group import Group
 from .directory_object import DirectoryObject
 from .planner_plan import PlannerPlan
+from .planner_bucket import PlannerBucket
 
 name = "py365.data"

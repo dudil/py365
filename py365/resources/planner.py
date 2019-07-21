@@ -20,22 +20,40 @@ class Planner(BaseResource):
             self.planID = planID
             BaseResource.__init__(self, connection, f'/planner/plans/{planID}')
 
-        def listTasks(self):
+        def listTasks(self) -> [data.PlannerTask]:
             permissions = ["Group.Read.All", "Group.ReadWrite.All"]
             endpoint = self.ENDPOINT + '/tasks'
             response = self.connection.get(endpoint=endpoint, permissions=permissions)
 
+            tasks: [data.PlannerTask] = []
+
             if response.ok:
                 respJson = response.json()
-                tasks = []
                 for taskData in respJson["value"]:
                     task = data.PlannerTask()
                     task.fromResponse(data=taskData)
                     tasks.append(task)
-                return tasks
             else:
                 print(f'Request Error{response.text}')
-                return None
+
+            return tasks
+
+        def listBuckets(self) -> [data.PlannerBucket]:
+            endpoint = self.ENDPOINT + '/buckets'
+            response = self.connection.get(endpoint=endpoint)
+
+            buckets: [data.PlannerBucket] = []
+
+            if response.ok:
+                respJson = response.json()
+                for bucketData in respJson["value"]:
+                    bucket = data.PlannerBucket()
+                    bucket.fromResponse(data=bucketData)
+                    buckets.append(bucket)
+            else:
+                print(f'Request Error{response.text}')
+
+            return buckets
 
     def __init__(self, connection: auth.AppConnection):
         BaseResource.__init__(self, connection, '/planner/')

@@ -9,9 +9,6 @@ from .identity import Identity
 from .planner_assignment import PlannerAssignment
 
 
-# from py365.utils import datetimeFromStr
-
-
 @attr.s(auto_attribs=True)
 class PlannerTask(BaseData):
     activeChecklistItemCount: int = None

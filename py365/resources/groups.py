@@ -24,18 +24,18 @@ class Groups(BaseResource):
         def listPlans(self) -> [data.PlannerPlan]:
             endpoint = self.ENDPOINT + '/planner/plans'
             response = self.connection.get(endpoint=endpoint)
+            plans = []
             if response.ok:
                 respData = response.json()
                 plansData = respData.get("value")
-                plans = []
                 for planData in plansData:
                     plan = data.PlannerPlan()
                     plan.fromResponse(data=planData)
                     plans.append(plan)
-                return plans
             else:
                 print(f'Request Error {response.text}')
-                return None
+
+            return plans
 
         def updateGroup(self, updateData: data.Group) -> bool:
             json = updateData.json
