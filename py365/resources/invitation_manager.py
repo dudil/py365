@@ -13,7 +13,7 @@ class InvitationManager(BaseResource):
     """
 
     def __init__(self, connection: AppConnection):
-        BaseResource.__init__(self, connection=connection, endpoint='/invitations')
+        super().__init__(connection=connection, edgeBase='/invitations')
 
     def createInvitation(self, invitation: Invitation) -> Invitation:
         """
@@ -23,8 +23,7 @@ class InvitationManager(BaseResource):
         :return:
         :rtype:
         """
-        response = self.connection.post(
-            self.ENDPOINT, json=invitation.json)
+        response = self.postAPI(json=invitation.json)
         # TODO check for valid response
         invitation.inviteRedeemUrl = response.json().get("inviteRedeemUrl", None)
         invitation.status = response.json().get("status", InvitationStatusValues.ERROR)

@@ -4,7 +4,6 @@
 import attr
 
 from ._base_data import BaseData
-from .planner_task import PlannerTask
 
 
 @attr.s(auto_attribs=True)

@@ -15,16 +15,10 @@ class DirectoryObjects(BaseResource):
         pass
 
     def __init__(self, connection: auth.AppConnection):
-        BaseResource.__init__(self, connection, '/directoryObjects')
+        BaseResource.__init__(self, connection=connection, edgeBase='/directoryObjects')
 
     def getByIds(self) -> [data.DirectoryObject]:
-        """
-
-        :return:
-        :rtype:
-        """
-        endpoint = self.ENDPOINT + "/getByIds"
-        response = self.connection.get(endpoint=endpoint)
+        response = self.getAPI(edgeEnd="/getByIds")
         if response.ok:
             respData = response.json()
             dirObjectsData = respData.get("value")

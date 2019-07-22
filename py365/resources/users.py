@@ -1,9 +1,10 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
-import urllib.parse
+from typing import Optional
 from py365 import auth, data
 from ._base_resource import BaseResource
+from ._child_resource import ChildResource
 
 
 class Users(BaseResource):
@@ -17,15 +18,15 @@ class Users(BaseResource):
     * By using the /me alias for the signed-in user, which is the same as /users/{signed-in user's id}
     """
 
-    class User(BaseResource):
+    class User(ChildResource):
         """
         Class User is the user edge related to user operations
         """
 
         # user key can be either id or login mail
-        def __init__(self, connection: auth.AppConnection, userKey: str):
+        def __init__(self, usersAPI: BaseResource, userKey: str):
             self.userKey = userKey
-            BaseResource.__init__(self, connection=connection, endpoint=f'/users/{userKey}')
+            super().__init__(baseAPI=usersAPI, edgeMid=f'/{userKey}')
 
         def getUser(self) -> data.User:
             """
@@ -37,9 +38,7 @@ class Users(BaseResource):
             """
 
             user: data.User = data.User()
-            endpoint = self.ENDPOINT
-            endpoint = urllib.parse.quote(endpoint)
-            response = self.connection.get(endpoint)
+            response = self.getAPI()
             if response.ok:
                 respJson = response.json()
                 user.fromResponse(respJson)
@@ -57,7 +56,7 @@ class Users(BaseResource):
             :return:
             :rtype:
             """
-            response = self.connection.patch(self.ENDPOINT, userData.json)
+            response = self.patchAPI(json=userData.json)
 
             if response.ok:
                 print(f'updateUser Request OK!')
@@ -76,13 +75,11 @@ class Users(BaseResource):
             :return: call response
             :rtype: Response
             """
-            endpoint = self.ENDPOINT + '/sendMail'
             payload = {
                 "message": message.json,
                 "saveToSentItems": saveToSentItems
             }
-            response = self.connection.post(endpoint=endpoint, json=payload)
-
+            response = self.postAPI(edgeEnd='/sendMail', json=payload)
             return response
 
         def getMemberGroups(self, securityEnabledOnly: bool = False) -> [str]:
@@ -92,17 +89,15 @@ class Users(BaseResource):
             :rtype:
             """
 
-            endpoint = self.ENDPOINT + '/getMemberGroups'
             payload = {
                 "securityEnabledOnly": securityEnabledOnly
             }
-            response = self.connection.post(endpoint=endpoint, json=payload)
+            response = self.postAPI(edgeEnd='/getMemberGroups', json=payload)
             groups: [str] = []
             if response.ok:
                 groups = response.json().get("value")
             else:
                 print(f'Request Error {response.text}')
-
             return groups
 
     def __init__(self, connection: auth.AppConnection):
@@ -111,7 +106,7 @@ class Users(BaseResource):
         :param connection: graph connection
         :type connection: AppConnection
         """
-        BaseResource.__init__(self, connection=connection, endpoint='/users/')
+        BaseResource.__init__(self, connection=connection, edgeBase='/users/')
 
     def user(self, userKey: str) -> User:
         """
@@ -126,10 +121,10 @@ class Users(BaseResource):
         :return: a User API object that will handle a specific user API operations
         :rtype: Users -> User subclass
         """
-        userAPI = Users.User(connection=self.connection, userKey=userKey)
+        userAPI = Users.User(usersAPI=self, userKey=userKey)
         return userAPI
 
-    def createUser(self, newUser: data.User) -> data.User:
+    def createUser(self, newUser: data.User) -> Optional[data.User]:
         """
         https://docs.microsoft.com/en-us/graph/api/user-post-users
         Use this API to create a new User. The request body contains the user to create.
@@ -147,20 +142,19 @@ class Users(BaseResource):
         assert (newUser.userPrincipalName is not None)
         assert (newUser.passwordProfile is not None)
 
-        user: data.User = data.User()
         json = newUser.json
-        response = self.connection.post(endpoint=self.ENDPOINT, json=json)
-
+        response = self.postAPI(edgeEnd="", json=json)
         if response.ok:
             respJson = response.json()
+            user = data.User()
             user.fromResponse(data=respJson)
+            return user
         else:
             print(f'Request Error{response.text}')
-
-        return user
+            return None
 
     def listUsers(self) -> [data.User]:
-        response = self.connection.get(endpoint=self.ENDPOINT)
+        response = self.getAPI()
         if response.ok:
             respData = response.json()
             usersData = respData.get("value")

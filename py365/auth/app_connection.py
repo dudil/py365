@@ -43,7 +43,7 @@ class AppConnection(object):
             logging.error("no access token received")
             return None
 
-    def get(self, endpoint: str, params=None, permissions: [str] = None):
+    def get(self, endpoint: str, params: dict, permissions: [str] = None) -> requests.Response:
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         session = self.getSession()
@@ -51,7 +51,7 @@ class AppConnection(object):
         response = session.get(url, params=params)
         return response
 
-    def post(self, endpoint: str, json: dict = None, permissions: [str] = None):
+    def post(self, endpoint: str, json: dict, permissions: [str] = None) -> requests.Response:
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         session = self.getSession()
@@ -59,7 +59,7 @@ class AppConnection(object):
         response = session.post(url, json=json)
         return response
 
-    def patch(self, endpoint: str, json: dict, permissions: [str] = None):
+    def patch(self, endpoint: str, json: dict, permissions: [str] = None) -> requests.Response:
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         session = self.getSession()

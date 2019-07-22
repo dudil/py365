@@ -3,6 +3,7 @@ https://docs.microsoft.com/en-us/graph/api/resources/group
 """
 from py365 import auth, data, enums
 from ._base_resource import BaseResource
+from ._child_resource import ChildResource
 
 
 class Groups(BaseResource):
@@ -15,15 +16,15 @@ class Groups(BaseResource):
     * Using delta query to track incremental additions, deletions, and updates, by providing a delta function.
     """
 
-    class Group(BaseResource):
+    class Group(ChildResource):
 
-        def __init__(self, connection: auth.AppConnection, groupId: str):
+        def __init__(self, groupsAPI: BaseResource, groupId: str):
             self.groupId = groupId
-            BaseResource.__init__(self, connection=connection, endpoint=f'/groups/{groupId}')
+            super().__init__(baseAPI=groupsAPI, edgeMid=f'/{groupId}')
 
         def listPlans(self) -> [data.PlannerPlan]:
-            endpoint = self.ENDPOINT + '/planner/plans'
-            response = self.connection.get(endpoint=endpoint)
+            edgeEnd = '/planner/plans'
+            response = self.getAPI(edgeEnd=edgeEnd)
             plans = []
             if response.ok:
                 respData = response.json()
@@ -34,31 +35,27 @@ class Groups(BaseResource):
                     plans.append(plan)
             else:
                 print(f'Request Error {response.text}')
-
             return plans
 
         def updateGroup(self, updateData: data.Group) -> bool:
             json = updateData.json
-            response = self.connection.patch(endpoint=self.ENDPOINT, json=json)
-
+            response = self.patchAPI(json=json)
             if response.ok:
                 retCode = True
             else:
                 print(f'Request Error {response.text}')
                 retCode = False
-
             return retCode
 
         def _listUsers(self, userType: enums.GroupUserTypes) -> [data.DirectoryObject]:
-            endpoint = self.ENDPOINT
             if userType is enums.GroupUserTypes.MEMBER:
-                endpoint += '/members'
+                edgeEnd = '/members'
             elif userType is enums.GroupUserTypes.OWNER:
-                endpoint += '/owners'
+                edgeEnd = '/owners'
             else:
                 raise Exception(f"Not supported user type: {type}")
 
-            response = self.connection.get(endpoint=endpoint)
+            response = self.getAPI(edgeEnd=edgeEnd)
             users: [data.DirectoryObject] = []
             if response.ok:
                 dirObjects = response.json().get("value")
@@ -68,7 +65,6 @@ class Groups(BaseResource):
                     users.append(user)
             else:
                 print(f'Request Error {response.text}')
-
             return users
 
         def listMembers(self) -> [data.DirectoryObject]:
@@ -88,16 +84,15 @@ class Groups(BaseResource):
             return self._listUsers(enums.GroupUserTypes.Owner)
 
         def _addUser(self, userType: enums.GroupUserTypes, user: data.DirectoryObject):
-            endpoint = self.ENDPOINT
             if userType is enums.GroupUserTypes.MEMBER:
-                endpoint += '/members/$ref'
+                edgeEnd = '/members/$ref'
             elif userType is enums.GroupUserTypes.OWNER:
-                endpoint += '/owners/$ref'
+                edgeEnd = '/owners/$ref'
             else:
                 raise Exception(f"Not supported user type: {type}")
 
             json = {"@odata.id": user.odata_id}
-            response = self.connection.post(endpoint=endpoint, json=json)
+            response = self.postAPI(edgeEnd=edgeEnd, json=json)
             if response.ok:
                 pass
             else:
@@ -124,10 +119,10 @@ class Groups(BaseResource):
             self._addUser(enums.GroupUserTypes.OWNER, owner)
 
     def __init__(self, connection: auth.AppConnection):
-        BaseResource.__init__(self, connection, '/groups')
+        super().__init__(connection, '/groups')
 
     def group(self, groupId) -> Group:
-        groupAPI = Groups.Group(connection=self.connection, groupId=groupId)
+        groupAPI = Groups.Group(groupsAPI=self, groupId=groupId)
         return groupAPI
 
     def createGroup(self, newGroup: data.Group) -> data.Group:
@@ -148,8 +143,7 @@ class Groups(BaseResource):
         json = newGroup.json
 
         json.update({"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList})
-        response = self.connection.post(endpoint=self.ENDPOINT, json=json)
-
+        response = self.postAPI(json=json)
         if response.ok:
             respJson = response.json()
             newGroup.fromResponse(data=respJson)
@@ -179,7 +173,7 @@ class Groups(BaseResource):
         :return:
         :rtype:
         """
-        response = self.connection.get(endpoint=self.ENDPOINT)
+        response = self.getAPI()
         if response.ok:
             respData = response.json()
             groupsData = respData.get("value")
