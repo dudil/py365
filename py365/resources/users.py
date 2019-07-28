@@ -38,7 +38,7 @@ class Users(BaseResource):
             """
 
             user: data.User = data.User()
-            response = self.getAPI()
+            response = self.__getAPI__()
             if response.ok:
                 respJson = response.json()
                 user.fromResponse(respJson)
@@ -56,7 +56,7 @@ class Users(BaseResource):
             :return:
             :rtype:
             """
-            response = self.patchAPI(json=userData.json)
+            response = self.__patchAPI__(json=userData.json)
 
             if response.ok:
                 print(f'updateUser Request OK!')
@@ -79,7 +79,7 @@ class Users(BaseResource):
                 "message": message.json,
                 "saveToSentItems": saveToSentItems
             }
-            response = self.postAPI(edgeEnd='/sendMail', json=payload)
+            response = self.__postAPI__(edgeEnd='/sendMail', json=payload)
             return response
 
         def getMemberGroups(self, securityEnabledOnly: bool = False) -> [str]:
@@ -92,7 +92,7 @@ class Users(BaseResource):
             payload = {
                 "securityEnabledOnly": securityEnabledOnly
             }
-            response = self.postAPI(edgeEnd='/getMemberGroups', json=payload)
+            response = self.__postAPI__(edgeEnd='/getMemberGroups', json=payload)
             groups: [str] = []
             if response.ok:
                 groups = response.json().get("value")
@@ -143,7 +143,7 @@ class Users(BaseResource):
         assert (newUser.passwordProfile is not None)
 
         json = newUser.json
-        response = self.postAPI(edgeEnd="", json=json)
+        response = self.__postAPI__(edgeEnd="", json=json)
         if response.ok:
             respJson = response.json()
             user = data.User()
@@ -154,7 +154,7 @@ class Users(BaseResource):
             return None
 
     def listUsers(self) -> [data.User]:
-        response = self.getAPI()
+        response = self.__getAPI__()
         if response.ok:
             respData = response.json()
             usersData = respData.get("value")

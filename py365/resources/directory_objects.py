@@ -18,7 +18,7 @@ class DirectoryObjects(BaseResource):
         BaseResource.__init__(self, connection=connection, edgeBase='/directoryObjects')
 
     def getByIds(self) -> [data.DirectoryObject]:
-        response = self.getAPI(edgeEnd="/getByIds")
+        response = self.__getAPI__(edgeEnd="/getByIds")
         if response.ok:
             respData = response.json()
             dirObjectsData = respData.get("value")

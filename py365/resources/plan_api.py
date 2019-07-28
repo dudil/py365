@@ -21,7 +21,7 @@ class PlanAPI(ChildResource):
 
     def listTasks(self) -> [data.PlannerTask]:
         tasks: [data.PlannerTask] = []
-        response = self.getAPI(edgeEnd="/tasks")
+        response = self.__getAPI__(edgeEnd="/tasks")
         if response.ok:
             respJson = response.json()
             for taskData in respJson["value"]:
@@ -34,7 +34,7 @@ class PlanAPI(ChildResource):
 
     def listBuckets(self) -> [data.PlannerBucket]:
         buckets: [data.PlannerBucket] = []
-        response = self.getAPI(edgeEnd="/buckets")
+        response = self.__getAPI__(edgeEnd="/buckets")
         if response.ok:
             respJson = response.json()
             for bucketData in respJson["value"]:

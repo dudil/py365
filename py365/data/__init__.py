@@ -1,3 +1,4 @@
+from .base_data import BaseData
 from .assigned_license import AssignedLicense
 from .email_address import EmailAddress
 from .identity import Identity

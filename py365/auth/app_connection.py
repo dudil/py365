@@ -51,18 +51,31 @@ class AppConnection(object):
         response = session.get(url, params=params)
         return response
 
-    def post(self, endpoint: str, json: dict, permissions: [str] = None) -> requests.Response:
+    def post(self, endpoint: str, json: dict
+             , permissions: [str] = None, addHeaders: dict = None) -> requests.Response:
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         session = self.getSession()
-
+        if addHeaders:
+            session.headers.update(addHeaders)
         response = session.post(url, json=json)
         return response
 
-    def patch(self, endpoint: str, json: dict, permissions: [str] = None) -> requests.Response:
+    def patch(self, endpoint: str, json: dict
+              , permissions: [str] = None, addHeaders: dict = None) -> requests.Response:
         self.verifyPermissions(permissions)
         url = self.get_api_url(endpoint)
         session = self.getSession()
-
+        if addHeaders:
+            session.headers.update(addHeaders)
         response = session.patch(url, json=json)
+        return response
+
+    def delete(self, endpoint: str, permissions: [str] = None, addHeaders: dict = None) -> requests.Response:
+        self.verifyPermissions(permissions)
+        url = self.get_api_url(endpoint)
+        session = self.getSession()
+        if addHeaders:
+            session.headers.update(addHeaders)
+        response = session.delete(url)
         return response

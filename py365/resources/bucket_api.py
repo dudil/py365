@@ -30,15 +30,12 @@ class BucketAPI(ChildResource):
         :return: the bucket object created
         :rtype: data.PlannerBucket
         """
-        json = newBucket.json
-        response = self.postAPI(json=json)
+        returnBucket = data.PlannerBucket()
+        response = self.__postAPI__(postData=newBucket, returnData=returnBucket)
         if response.ok:
-            respJson = response.json()
-            bucket = data.PlannerBucket()
-            bucket.fromResponse(data=respJson)
-            return bucket
+            return returnBucket
         else:
-            print(f'Request Error{response.text}')
+            print(f'Request Error {response.text}')
             return None
 
     def getBucket(self) -> Optional[data.PlannerBucket]:
@@ -49,14 +46,12 @@ class BucketAPI(ChildResource):
         :return: The requested bucket object
         :rtype: data.PlannerBucket
         """
-        response = self.getAPI()
+        returnBucket = data.PlannerBucket()
+        response = self.__getAPI__(returnData=returnBucket)
         if response.ok:
-            respJson = response.json()
-            bucket = data.PlannerBucket()
-            bucket.fromResponse(data=respJson)
-            return bucket
+            return returnBucket
         else:
-            print(f'Request Error{response.text}')
+            print(f'Request Error {response.text}')
             return None
 
     def listTasks(self) -> [data.PlannerTask]:
@@ -68,7 +63,7 @@ class BucketAPI(ChildResource):
         :rtype: [data.PlannerTask]
         """
         tasks: [data.PlannerTask] = []
-        response = self.getAPI(edgeEnd="/tasks")
+        response = self.__getAPI__(edgeEnd="/tasks")
         if response.ok:
             respJson = response.json()
             for taskData in respJson["value"]:
@@ -89,20 +84,15 @@ class BucketAPI(ChildResource):
         :return: the updated bucket object data
         :rtype: data.PlannerBucket
         """
-        raise NotImplementedError("Method not yet Implemented")  # Need to implement ETag first...
-        updateBucket.id = None  # remove bucket ID to avoid issues with different buckets id in request and response
-        json = updateBucket.json
-        response = self.patchAPI(json=json)
+        returnBucket = data.PlannerBucket()
+        response = self.__patchAPI__(patchData=updateBucket, returnData=returnBucket)
         if response.ok:
-            respJson = response.json()
-            bucket = data.PlannerBucket()
-            bucket.fromResponse(data=respJson)
-            return bucket
+            return returnBucket
         else:
             print(f'Request Error {response.text}')
             return None
 
-    def deleteBucket(self):
+    def deleteBucket(self, deleteBucket: data.PlannerBucket):
         """
         https://docs.microsoft.com/en-us/graph/api/plannerbucket-delete?view=graph-rest-1.0&tabs=http
 
@@ -110,4 +100,6 @@ class BucketAPI(ChildResource):
         :return: none
         :rtype: none
         """
-        raise NotImplementedError("Method not yet Implemented")
+        response = self.__deleteAPI__(deleteData=deleteBucket)
+        if not response.ok:
+            print(f'Request Error {response.text}')

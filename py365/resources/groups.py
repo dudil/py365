@@ -24,7 +24,7 @@ class Groups(BaseResource):
 
         def listPlans(self) -> [data.PlannerPlan]:
             edgeEnd = '/planner/plans'
-            response = self.getAPI(edgeEnd=edgeEnd)
+            response = self.__getAPI__(edgeEnd=edgeEnd)
             plans = []
             if response.ok:
                 respData = response.json()
@@ -39,7 +39,7 @@ class Groups(BaseResource):
 
         def updateGroup(self, updateData: data.Group) -> bool:
             json = updateData.json
-            response = self.patchAPI(json=json)
+            response = self.__patchAPI__(json=json)
             if response.ok:
                 retCode = True
             else:
@@ -55,7 +55,7 @@ class Groups(BaseResource):
             else:
                 raise Exception(f"Not supported user type: {type}")
 
-            response = self.getAPI(edgeEnd=edgeEnd)
+            response = self.__getAPI__(edgeEnd=edgeEnd)
             users: [data.DirectoryObject] = []
             if response.ok:
                 dirObjects = response.json().get("value")
@@ -92,7 +92,7 @@ class Groups(BaseResource):
                 raise Exception(f"Not supported user type: {type}")
 
             json = {"@odata.id": user.odata_id}
-            response = self.postAPI(edgeEnd=edgeEnd, json=json)
+            response = self.__postAPI__(edgeEnd=edgeEnd, json=json)
             if response.ok:
                 pass
             else:
@@ -143,7 +143,7 @@ class Groups(BaseResource):
         json = newGroup.json
 
         json.update({"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList})
-        response = self.postAPI(json=json)
+        response = self.__postAPI__(json=json)
         if response.ok:
             respJson = response.json()
             newGroup.fromResponse(data=respJson)
@@ -173,7 +173,7 @@ class Groups(BaseResource):
         :return:
         :rtype:
         """
-        response = self.getAPI()
+        response = self.__getAPI__()
         if response.ok:
             respData = response.json()
             groupsData = respData.get("value")

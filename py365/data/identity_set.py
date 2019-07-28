@@ -2,7 +2,7 @@
 https://docs.microsoft.com/en-us/graph/api/resources/identityset
 """
 
-from ._base_data import BaseData
+from .base_data import BaseData
 from .identity import Identity
 import attr
 

@@ -1,6 +1,6 @@
 import attr
 
-from ._base_data import BaseData
+from .base_data import BaseData
 from .item_body import ItemBody
 from .recipient import Recipient
 

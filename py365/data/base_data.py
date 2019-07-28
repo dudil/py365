@@ -12,6 +12,7 @@ class BaseData:
     Represent a base data on the OG
     Every OG data class should inherit from this class
     """
+    eTag: str = None
 
     @staticmethod
     def jsonVal(val: any) -> any:
@@ -42,6 +43,8 @@ class BaseData:
         ret: dict = {}
         for key, val in data.items():
             if val is not None:
+                if key == "eTag":
+                    continue
                 payloadVal = BaseData.jsonVal(val)
                 ret.update({key: payloadVal})
 

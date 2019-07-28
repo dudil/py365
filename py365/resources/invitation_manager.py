@@ -23,7 +23,7 @@ class InvitationManager(BaseResource):
         :return:
         :rtype:
         """
-        response = self.postAPI(json=invitation.json)
+        response = self.__postAPI__(json=invitation.json)
         # TODO check for valid response
         invitation.inviteRedeemUrl = response.json().get("inviteRedeemUrl", None)
         invitation.status = response.json().get("status", InvitationStatusValues.ERROR)

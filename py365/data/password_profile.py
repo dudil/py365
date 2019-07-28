@@ -3,7 +3,7 @@ import random
 import string
 import attr
 
-from ._base_data import BaseData
+from .base_data import BaseData
 
 
 @attr.s(auto_attribs=True)

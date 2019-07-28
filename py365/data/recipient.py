@@ -1,6 +1,6 @@
 # https://docs.microsoft.com/en-us/graph/api/resources/recipient
 import attr
-from ._base_data import BaseData
+from .base_data import BaseData
 from .email_address import EmailAddress
 
 

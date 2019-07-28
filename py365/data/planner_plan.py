@@ -1,7 +1,7 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/plannerplan
 """
-from ._base_data import BaseData
+from .base_data import BaseData
 from .identity_set import IdentitySet
 import attr
 import datetime

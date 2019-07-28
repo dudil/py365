@@ -4,7 +4,7 @@ import attr
 from datetime import datetime
 
 from . import PlannerAppliedCategories
-from ._base_data import BaseData
+from .base_data import BaseData
 from .identity import Identity
 from .planner_assignment import PlannerAssignment
 

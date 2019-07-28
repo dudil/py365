@@ -1,7 +1,7 @@
 import attr
 from datetime import datetime
 
-from ._base_data import BaseData
+from .base_data import BaseData
 from .identity import Identity
 
 

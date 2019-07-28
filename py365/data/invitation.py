@@ -2,7 +2,7 @@ import attr
 
 from py365.enums import InvitationStatusValues, UserTypes
 
-from ._base_data import BaseData
+from .base_data import BaseData
 from .user import User
 
 
