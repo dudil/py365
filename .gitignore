@@ -111,3 +111,6 @@ test.py
 
 # PyCharm files
 .idea
+
+# Apple Stuff
+.DS_Store
