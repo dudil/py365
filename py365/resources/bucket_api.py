@@ -11,7 +11,12 @@ class BucketAPI(ChildResource):
     The plannerBucket resource represents a bucket (or "custom column") for tasks in a plan in Office 365
     """
 
-    def __init__(self, plannerAPI: BaseResource, bucketID: str = None, bucket: data.PlannerBucket = None):
+    def __init__(
+        self,
+        plannerAPI: BaseResource,
+        bucketID: str = None,
+        bucket: data.PlannerBucket = None,
+    ):
         if bucketID:
             self.bucketID = bucketID
         elif bucket and bucket.id:
@@ -20,7 +25,9 @@ class BucketAPI(ChildResource):
             self.bucketID = ""
         super().__init__(baseAPI=plannerAPI, edgeMid=f"/buckets/{self.bucketID}")
 
-    def createBucket(self, newBucket: data.PlannerBucket) -> Optional[data.PlannerBucket]:
+    def createBucket(
+        self, newBucket: data.PlannerBucket
+    ) -> Optional[data.PlannerBucket]:
         """
         https://docs.microsoft.com/en-us/graph/api/planner-post-buckets?view=graph-rest-1.0&tabs=http
 
@@ -35,7 +42,7 @@ class BucketAPI(ChildResource):
         if response.ok:
             return returnBucket
         else:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")
             return None
 
     def getBucket(self) -> Optional[data.PlannerBucket]:
@@ -51,7 +58,7 @@ class BucketAPI(ChildResource):
         if response.ok:
             return returnBucket
         else:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")
             return None
 
     def listTasks(self) -> [data.PlannerTask]:
@@ -71,10 +78,12 @@ class BucketAPI(ChildResource):
                 task.fromResponse(data=taskData)
                 tasks.append(task)
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
         return tasks
 
-    def updateBucket(self, updateBucket: data.PlannerBucket) -> Optional[data.PlannerBucket]:
+    def updateBucket(
+        self, updateBucket: data.PlannerBucket
+    ) -> Optional[data.PlannerBucket]:
         """
         https://docs.microsoft.com/en-us/graph/api/plannerbucket-update?view=graph-rest-1.0&tabs=http
 
@@ -89,7 +98,7 @@ class BucketAPI(ChildResource):
         if response.ok:
             return returnBucket
         else:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")
             return None
 
     def deleteBucket(self, deleteBucket: data.PlannerBucket):
@@ -102,4 +111,4 @@ class BucketAPI(ChildResource):
         """
         response = self.__deleteAPI__(deleteData=deleteBucket)
         if not response.ok:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")

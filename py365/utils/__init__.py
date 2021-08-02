@@ -4,8 +4,7 @@ _DATETIME_FORMAT: str = "%Y-%m-%dT%H:%M:%SZ%Z"
 
 
 def datetimeFromStr(datetimeStr: str) -> datetime:
-    return datetime.strptime(datetimeStr
-                             , _DATETIME_FORMAT)
+    return datetime.strptime(datetimeStr, _DATETIME_FORMAT)
 
 
 def datetimeToStr(dateObj: datetime) -> str:

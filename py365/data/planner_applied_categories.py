@@ -12,6 +12,7 @@ class PlannerAppliedCategories(BaseData):
     There can be up to 6 categories applied to a task. Category descriptions, e.g. category1, category2 etc.,
     are part of the plan details object. This is an open type.
     """
+
     category1: bool = False
     category2: bool = False
     category3: bool = False

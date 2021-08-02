@@ -11,11 +11,11 @@ class PlannerAssignment(BaseData):
     assignedDateTime: datetime = None
     orderHint: str = None
 
-    '''
+    """
     @classmethod
     def fromResponse(cls, retObj: object, data: dict):
         plannerAssignment = cls()
         BaseData.fromResponse(retObj=plannerAssignment, data=data)
 
         return plannerAssignment
-    '''
+    """

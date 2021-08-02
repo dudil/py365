@@ -15,7 +15,7 @@ class DirectoryObjects(BaseResource):
         pass
 
     def __init__(self, connection: auth.AppConnection):
-        BaseResource.__init__(self, connection=connection, edgeBase='/directoryObjects')
+        BaseResource.__init__(self, connection=connection, edgeBase="/directoryObjects")
 
     def getByIds(self) -> [data.DirectoryObject]:
         response = self.__getAPI__(edgeEnd="/getByIds")
@@ -29,5 +29,5 @@ class DirectoryObjects(BaseResource):
                 dirObjects.append(dirObject)
             return dirObjects
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
             return None

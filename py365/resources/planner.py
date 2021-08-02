@@ -12,12 +12,14 @@ class Planner(BaseResource):
     """
 
     def __init__(self, connection: auth.AppConnection):
-        super().__init__(connection, edgeBase='/planner')
+        super().__init__(connection, edgeBase="/planner")
 
     def plan(self, planID: str = None, plan: data.PlannerPlan = None) -> PlanAPI:
         plansAPI = PlanAPI(plannerAPI=self, planID=planID, plan=plan)
         return plansAPI
 
-    def bucket(self, bucketID: str = None, bucket: data.PlannerBucket = None) -> BucketAPI:
+    def bucket(
+        self, bucketID: str = None, bucket: data.PlannerBucket = None
+    ) -> BucketAPI:
         bucketAPI = BucketAPI(plannerAPI=self, bucketID=bucketID, bucket=bucket)
         return bucketAPI

@@ -11,6 +11,7 @@ class Invitation(BaseData):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/invitation
     """
+
     invitedUserDisplayName: str = None
     invitedUserEmailAddress: str = None
     inviteRedeemUrl: str = None

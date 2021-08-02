@@ -1,7 +1,7 @@
 """Enums use by the users edge"""
 
 # TODO: Move to the resource folder
-'''
+"""
 # https://docs.microsoft.com/en-us/graph/api/resources/assignedplan
 class AssignedPlan:
     assignedDateTime: datetime
@@ -46,4 +46,4 @@ class MailboxSettings:
     language: any
     timeZone: str
     workingHours: any
-'''
+"""

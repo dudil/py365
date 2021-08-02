@@ -7,9 +7,15 @@ class Graph365:
     Use it in order to access all other elements in the package
     """
 
-    def __init__(self, appId: str, tenantId: str
-                 , connectionType: enums.ConnectionTypes = enums.ConnectionTypes.MSAL
-                 , appSecret: str = None, username: str = None, password: str = None):
+    def __init__(
+        self,
+        appId: str,
+        tenantId: str,
+        connectionType: enums.ConnectionTypes = enums.ConnectionTypes.MSAL,
+        appSecret: str = None,
+        username: str = None,
+        password: str = None,
+    ):
         self.appId = appId
         self.appSecret = appSecret
         self.tenantId = tenantId
@@ -18,11 +24,16 @@ class Graph365:
         # TODO: Reformat
         if connectionType is enums.ConnectionTypes.MSAL:
             connection = auth.MsalConnection(
-                app_id=appId, app_secret=appSecret, tenant_id=tenantId
-                , username=username, password=password)
+                app_id=appId,
+                app_secret=appSecret,
+                tenant_id=tenantId,
+                username=username,
+                password=password,
+            )
         else:
             connection = auth.AdalConnection(
-                app_id=appId, app_secret=appSecret, tenant_id=tenantId)
+                app_id=appId, app_secret=appSecret, tenant_id=tenantId
+            )
 
         self.connection = connection
 

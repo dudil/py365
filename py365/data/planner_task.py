@@ -33,7 +33,7 @@ class PlannerTask(BaseData):
     startDateTime: datetime = None
     title: str = None
 
-    '''
+    """
     @classmethod
     def fromResponse(cls, retObj: object, data: dict):
         task = cls()
@@ -70,4 +70,4 @@ class PlannerTask(BaseData):
         task.title = data.get("title")
 
         return task
-    '''
+    """

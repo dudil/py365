@@ -27,6 +27,6 @@ class PasswordProfile(BaseData):
             password += random.choice(randomSource)
         passwordList = list(password)
         random.SystemRandom().shuffle(passwordList)
-        password = ''.join(passwordList)
+        password = "".join(passwordList)
         self.password = password
         return password

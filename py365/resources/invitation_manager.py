@@ -13,7 +13,7 @@ class InvitationManager(BaseResource):
     """
 
     def __init__(self, connection: AppConnection):
-        super().__init__(connection=connection, edgeBase='/invitations')
+        super().__init__(connection=connection, edgeBase="/invitations")
 
     def createInvitation(self, invitation: Invitation) -> Invitation:
         """

@@ -17,13 +17,12 @@ class Groups(BaseResource):
     """
 
     class Group(ChildResource):
-
         def __init__(self, groupsAPI: BaseResource, groupId: str):
             self.groupId = groupId
-            super().__init__(baseAPI=groupsAPI, edgeMid=f'/{groupId}')
+            super().__init__(baseAPI=groupsAPI, edgeMid=f"/{groupId}")
 
         def listPlans(self) -> [data.PlannerPlan]:
-            edgeEnd = '/planner/plans'
+            edgeEnd = "/planner/plans"
             response = self.__getAPI__(edgeEnd=edgeEnd)
             plans = []
             if response.ok:
@@ -34,7 +33,7 @@ class Groups(BaseResource):
                     plan.fromResponse(data=planData)
                     plans.append(plan)
             else:
-                print(f'Request Error {response.text}')
+                print(f"Request Error {response.text}")
             return plans
 
         def updateGroup(self, updateData: data.Group) -> bool:
@@ -43,15 +42,15 @@ class Groups(BaseResource):
             if response.ok:
                 retCode = True
             else:
-                print(f'Request Error {response.text}')
+                print(f"Request Error {response.text}")
                 retCode = False
             return retCode
 
         def _listUsers(self, userType: enums.GroupUserTypes) -> [data.DirectoryObject]:
             if userType is enums.GroupUserTypes.MEMBER:
-                edgeEnd = '/members'
+                edgeEnd = "/members"
             elif userType is enums.GroupUserTypes.OWNER:
-                edgeEnd = '/owners'
+                edgeEnd = "/owners"
             else:
                 raise Exception(f"Not supported user type: {type}")
 
@@ -64,7 +63,7 @@ class Groups(BaseResource):
                     user.fromResponse(data=dirObject)
                     users.append(user)
             else:
-                print(f'Request Error {response.text}')
+                print(f"Request Error {response.text}")
             return users
 
         def listMembers(self) -> [data.DirectoryObject]:
@@ -85,9 +84,9 @@ class Groups(BaseResource):
 
         def _addUser(self, userType: enums.GroupUserTypes, user: data.DirectoryObject):
             if userType is enums.GroupUserTypes.MEMBER:
-                edgeEnd = '/members/$ref'
+                edgeEnd = "/members/$ref"
             elif userType is enums.GroupUserTypes.OWNER:
-                edgeEnd = '/owners/$ref'
+                edgeEnd = "/owners/$ref"
             else:
                 raise Exception(f"Not supported user type: {type}")
 
@@ -96,7 +95,7 @@ class Groups(BaseResource):
             if response.ok:
                 pass
             else:
-                print(f'Request Error {response.text}')
+                print(f"Request Error {response.text}")
 
         def addMember(self, member: data.DirectoryObject):
             """
@@ -119,20 +118,30 @@ class Groups(BaseResource):
             self._addUser(enums.GroupUserTypes.OWNER, owner)
 
     def __init__(self, connection: auth.AppConnection):
-        super().__init__(connection, '/groups')
+        super().__init__(connection, "/groups")
 
     def group(self, groupId) -> Group:
         groupAPI = Groups.Group(groupsAPI=self, groupId=groupId)
         return groupAPI
 
     def createGroup(self, newGroup: data.Group) -> data.Group:
-        assert (newGroup.displayName is not None)  # The name to display in the address book for the group. Required.
-        assert (newGroup.mailEnabled is not None)  # Set to true for mail-enabled groups. Required.
-        assert (newGroup.mailNickname is not None)  # The mail alias for the group. Required.
-        assert (newGroup.securityEnabled is not None)  # Set to true for security-enabled groups. Required.
+        assert (
+            newGroup.displayName is not None
+        )  # The name to display in the address book for the group. Required.
+        assert (
+            newGroup.mailEnabled is not None
+        )  # Set to true for mail-enabled groups. Required.
+        assert (
+            newGroup.mailNickname is not None
+        )  # The mail alias for the group. Required.
+        assert (
+            newGroup.securityEnabled is not None
+        )  # Set to true for security-enabled groups. Required.
         #  assert(newGroup.owners is not None)  # The owners for the group at creation time. Optional.
         #  assert(newGroup.members is not None)  # The members for the group at creation time. Optional.
-        assert (newGroup.groupTypes is not None)  # Control the type of group and its membership
+        assert (
+            newGroup.groupTypes is not None
+        )  # Control the type of group and its membership
 
         members = newGroup.members
         membersDataList = [m.odata_id for m in members]
@@ -142,19 +151,28 @@ class Groups(BaseResource):
         newGroup.owners = None
         json = newGroup.json
 
-        json.update({"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList})
+        json.update(
+            {"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList}
+        )
         response = self.__postAPI__(json=json)
         if response.ok:
             respJson = response.json()
             newGroup.fromResponse(data=respJson)
         else:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")
 
         return newGroup
 
-    def createGroupByCategory(self, groupCategory: enums.GroupCategory, displayName: str, mailNickname: str
-                              , visibility: enums.GroupVisibility, owners: [data.DirectoryObject]
-                              , members: [data.DirectoryObject] = None, description: str = None) -> data.Group:
+    def createGroupByCategory(
+        self,
+        groupCategory: enums.GroupCategory,
+        displayName: str,
+        mailNickname: str,
+        visibility: enums.GroupVisibility,
+        owners: [data.DirectoryObject],
+        members: [data.DirectoryObject] = None,
+        description: str = None,
+    ) -> data.Group:
         newGroup = data.Group()
         newGroup.category = groupCategory
         newGroup.displayName = displayName
@@ -184,5 +202,5 @@ class Groups(BaseResource):
                 groups.append(group)
             return groups
         else:
-            print(f'Request Error {response.text}')
+            print(f"Request Error {response.text}")
             return None

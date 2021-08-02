@@ -4,8 +4,12 @@ from py365 import data
 
 
 class PlanAPI(ChildResource):
-
-    def __init__(self, plannerAPI: BaseResource, planID: str = None, plan: data.PlannerPlan = None):
+    def __init__(
+        self,
+        plannerAPI: BaseResource,
+        planID: str = None,
+        plan: data.PlannerPlan = None,
+    ):
         """
         Plans are the containers of tasks.
         To create a task in a plan, set the planId property on the task object to the ID of the plan
@@ -29,7 +33,7 @@ class PlanAPI(ChildResource):
                 task.fromResponse(data=taskData)
                 tasks.append(task)
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
         return tasks
 
     def listBuckets(self) -> [data.PlannerBucket]:
@@ -42,5 +46,5 @@ class PlanAPI(ChildResource):
                 bucket.fromResponse(data=bucketData)
                 buckets.append(bucket)
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
         return buckets

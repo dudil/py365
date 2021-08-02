@@ -12,6 +12,7 @@ class BaseData:
     Represent a base data on the OG
     Every OG data class should inherit from this class
     """
+
     eTag: str = None
 
     @staticmethod

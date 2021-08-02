@@ -20,51 +20,76 @@ class BaseResource:
             if response.text:
                 respJson = response.json()
                 data.fromResponse(data=respJson)
-            if 'ETag' in response.headers:
-                data.eTag = response.headers['ETag']
+            if "ETag" in response.headers:
+                data.eTag = response.headers["ETag"]
 
-    def __getAPI__(self, edgeEnd: str = "", params: dict = None
-                   , permissions: [str] = None, returnData: BaseData = None) -> Response:
+    def __getAPI__(
+        self,
+        edgeEnd: str = "",
+        params: dict = None,
+        permissions: [str] = None,
+        returnData: BaseData = None,
+    ) -> Response:
         endpoint = self.EDGE_BASE + edgeEnd
         endpoint = urllib.parse.quote(endpoint)
-        response = self._connection.get(endpoint=endpoint, params=params, permissions=permissions)
+        response = self._connection.get(
+            endpoint=endpoint, params=params, permissions=permissions
+        )
         self.__getResponseData__(returnData, response)
         return response
 
-    def __postAPI__(self, edgeEnd: str = "", json: dict = None, permissions: [str] = None
-                    , postData: BaseData = None, returnData: BaseData = None) -> Response:
+    def __postAPI__(
+        self,
+        edgeEnd: str = "",
+        json: dict = None,
+        permissions: [str] = None,
+        postData: BaseData = None,
+        returnData: BaseData = None,
+    ) -> Response:
         endpoint = self.EDGE_BASE + edgeEnd
         endpoint = urllib.parse.quote(endpoint)
         addHeaders = {}
         if postData:
             json = postData.json
             if postData.eTag:
-                addHeaders.update({'If-Match': postData.eTag})
-        response = self._connection.post(endpoint=endpoint, json=json
-                                         , permissions=permissions, addHeaders=addHeaders)
+                addHeaders.update({"If-Match": postData.eTag})
+        response = self._connection.post(
+            endpoint=endpoint, json=json, permissions=permissions, addHeaders=addHeaders
+        )
         self.__getResponseData__(returnData, response)
         return response
 
-    def __patchAPI__(self, edgeEnd: str = "", json: dict = None, permissions: [str] = None
-                     , patchData: BaseData = None, returnData: BaseData = None) -> Response:
+    def __patchAPI__(
+        self,
+        edgeEnd: str = "",
+        json: dict = None,
+        permissions: [str] = None,
+        patchData: BaseData = None,
+        returnData: BaseData = None,
+    ) -> Response:
         endpoint = self.EDGE_BASE + edgeEnd
         endpoint = urllib.parse.quote(endpoint)
         addHeaders = {}
         if patchData:
             json = patchData.json
             if patchData.eTag:
-                addHeaders.update({'If-Match': patchData.eTag})
-        response = self._connection.patch(endpoint=endpoint, json=json
-                                          , permissions=permissions, addHeaders=addHeaders)
+                addHeaders.update({"If-Match": patchData.eTag})
+        response = self._connection.patch(
+            endpoint=endpoint, json=json, permissions=permissions, addHeaders=addHeaders
+        )
         self.__getResponseData__(returnData, response)
         return response
 
-    def __deleteAPI__(self, edgeEnd: str = "", permissions: [str] = None, deleteData: BaseData = None):
+    def __deleteAPI__(
+        self, edgeEnd: str = "", permissions: [str] = None, deleteData: BaseData = None
+    ):
         endpoint = self.EDGE_BASE + edgeEnd
         endpoint = urllib.parse.quote(endpoint)
         addHeaders = {}
         if deleteData:
             if deleteData.eTag:
-                addHeaders.update({'If-Match': deleteData.eTag})
-        response = self._connection.delete(endpoint=endpoint, permissions=permissions, addHeaders=addHeaders)
+                addHeaders.update({"If-Match": deleteData.eTag})
+        response = self._connection.delete(
+            endpoint=endpoint, permissions=permissions, addHeaders=addHeaders
+        )
         return response

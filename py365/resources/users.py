@@ -26,7 +26,7 @@ class Users(BaseResource):
         # user key can be either id or login mail
         def __init__(self, usersAPI: BaseResource, userKey: str):
             self.userKey = userKey
-            super().__init__(baseAPI=usersAPI, edgeMid=f'/{userKey}')
+            super().__init__(baseAPI=usersAPI, edgeMid=f"/{userKey}")
 
         def getUser(self) -> data.User:
             """
@@ -43,7 +43,7 @@ class Users(BaseResource):
                 respJson = response.json()
                 user.fromResponse(respJson)
             else:
-                print(f'Request Error{response.text}')
+                print(f"Request Error{response.text}")
             return user
 
         def updateUser(self, userData: data.User):
@@ -59,9 +59,9 @@ class Users(BaseResource):
             response = self.__patchAPI__(json=userData.json)
 
             if response.ok:
-                print(f'updateUser Request OK!')
+                print(f"updateUser Request OK!")
             else:
-                print(f'updateUser Request Error{response.text}')
+                print(f"updateUser Request Error{response.text}")
 
         def sendMail(self, message: data.BaseMessage, saveToSentItems: bool = True):
             """
@@ -75,11 +75,8 @@ class Users(BaseResource):
             :return: call response
             :rtype: Response
             """
-            payload = {
-                "message": message.json,
-                "saveToSentItems": saveToSentItems
-            }
-            response = self.__postAPI__(edgeEnd='/sendMail', json=payload)
+            payload = {"message": message.json, "saveToSentItems": saveToSentItems}
+            response = self.__postAPI__(edgeEnd="/sendMail", json=payload)
             return response
 
         def getMemberGroups(self, securityEnabledOnly: bool = False) -> [str]:
@@ -89,15 +86,13 @@ class Users(BaseResource):
             :rtype:
             """
 
-            payload = {
-                "securityEnabledOnly": securityEnabledOnly
-            }
-            response = self.__postAPI__(edgeEnd='/getMemberGroups', json=payload)
+            payload = {"securityEnabledOnly": securityEnabledOnly}
+            response = self.__postAPI__(edgeEnd="/getMemberGroups", json=payload)
             groups: [str] = []
             if response.ok:
                 groups = response.json().get("value")
             else:
-                print(f'Request Error {response.text}')
+                print(f"Request Error {response.text}")
             return groups
 
     def __init__(self, connection: auth.AppConnection):
@@ -106,7 +101,7 @@ class Users(BaseResource):
         :param connection: graph connection
         :type connection: AppConnection
         """
-        BaseResource.__init__(self, connection=connection, edgeBase='/users/')
+        BaseResource.__init__(self, connection=connection, edgeBase="/users/")
 
     def user(self, userKey: str) -> User:
         """
@@ -136,11 +131,11 @@ class Users(BaseResource):
         :rtype:
         """
 
-        assert (newUser.accountEnabled is not None)
-        assert (newUser.displayName is not None)
-        assert (newUser.mailNickname is not None)
-        assert (newUser.userPrincipalName is not None)
-        assert (newUser.passwordProfile is not None)
+        assert newUser.accountEnabled is not None
+        assert newUser.displayName is not None
+        assert newUser.mailNickname is not None
+        assert newUser.userPrincipalName is not None
+        assert newUser.passwordProfile is not None
 
         json = newUser.json
         response = self.__postAPI__(edgeEnd="", json=json)
@@ -150,7 +145,7 @@ class Users(BaseResource):
             user.fromResponse(data=respJson)
             return user
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
             return None
 
     def listUsers(self) -> [data.User]:
@@ -165,5 +160,5 @@ class Users(BaseResource):
                 users.append(user)
             return users
         else:
-            print(f'Request Error{response.text}')
+            print(f"Request Error{response.text}")
             return None
