@@ -1,14 +1,13 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/plannerplan
 """
-from .base_data import BaseData
+
 from .identity_set import IdentitySet
-import attr
+from pydantic import BaseModel
 import datetime
 
 
-@attr.s(auto_attribs=True)
-class PlannerPlan(BaseData):
+class PlannerPlan(BaseModel):
     """
     The plannerPlan resource represents a plan in Office 365.
     A plan can be owned by a group and contains a collection of plannerTasks.

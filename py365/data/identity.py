@@ -1,10 +1,9 @@
 # Resource documentation
 # https://docs.microsoft.com/en-us/graph/api/resources/identity?view=graph-rest-1.0
-import attr
-from .base_data import BaseData
+from pydantic import BaseModel
+from py365.utils import OptStr
 
 
-@attr.s(auto_attribs=True)
-class Identity(BaseData):
-    displayName: str = None
-    id: str = None
+class Identity(BaseModel):
+    displayName: OptStr = None
+    id: OptStr = None

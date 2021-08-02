@@ -1,12 +1,11 @@
-import attr
+from pydantic import BaseModel
 
-from .base_data import BaseData
+
 from .item_body import ItemBody
 from .recipient import Recipient
 
 
-@attr.s(auto_attribs=True)
-class BaseMessage(BaseData):
+class BaseMessage(BaseModel):
     subject: str = None
     body: ItemBody = None
     toRecipients: [Recipient] = None

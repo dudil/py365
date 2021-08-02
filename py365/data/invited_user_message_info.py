@@ -1,11 +1,10 @@
-import attr
+from pydantic import BaseModel
 
-from .base_data import BaseData
+
 from .recipient import Recipient
 
 
-@attr.s(auto_attribs=True)
-class InvitedUserMessageInfo(BaseData):
+class InvitedUserMessageInfo(BaseModel):
     """
     # https://docs.microsoft.com/en-us/graph/api/resources/invitedusermessageinfo
     """

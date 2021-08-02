@@ -1,14 +1,13 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/user
 """
-import attr
+from pydantic import BaseModel
 import datetime
 from .directory_object import DirectoryObject
 from .password_profile import PasswordProfile
 from py365.enums import UserTypes
 
 
-@attr.s(auto_attribs=True)
 class User(DirectoryObject):
     """
     # user resource type

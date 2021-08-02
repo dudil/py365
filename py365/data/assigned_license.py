@@ -1,11 +1,9 @@
 """ https://docs.microsoft.com/en-us/graph/api/resources/assignedlicense """
-import uuid
-import attr
 
-from .base_data import BaseData
+from typing import Optional, List
+from pydantic import BaseModel, UUID4
 
 
-@attr.s(auto_attribs=True)
-class AssignedLicense(BaseData):
-    disabledPlans: [uuid.UUID] = None
-    skuId: uuid.UUID = None
+class AssignedLicense(BaseModel):
+    disabledPlans: Optional[List[UUID4]] = None
+    skuId: Optional[UUID4] = None

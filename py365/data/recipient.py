@@ -1,11 +1,10 @@
 # https://docs.microsoft.com/en-us/graph/api/resources/recipient
-import attr
-from .base_data import BaseData
+from pydantic import BaseModel
+
 from .email_address import EmailAddress
 
 
-@attr.s(auto_attribs=True)
-class Recipient(BaseData):
+class Recipient(BaseModel):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/recipient
     """

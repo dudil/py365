@@ -1,13 +1,10 @@
 # Resource document
 # https://docs.microsoft.com/en-us/graph/api/resources/plannerbucket?view=graph-rest-1.0
 
-import attr
-
-from .base_data import BaseData
+from pydantic import BaseModel
 
 
-@attr.s(auto_attribs=True)
-class PlannerBucket(BaseData):
+class PlannerBucket(BaseModel):
     id: str = None
     name: str = None
     orderHint: str = None

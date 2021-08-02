@@ -1,7 +1,5 @@
-import attr
-from .base_data import BaseData
+from pydantic import BaseModel
 
 
-@attr.s(auto_attribs=True)
-class OnPremisesProvisioningError(BaseData):
+class OnPremisesProvisioningError(BaseModel):
     pass

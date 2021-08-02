@@ -1,9 +1,8 @@
-import attr
-from .base_data import BaseData
+from typing import Optional
+from pydantic import BaseModel
 
 
-@attr.s(auto_attribs=True)
-class DirectoryObject(BaseData):
+class DirectoryObject(BaseModel):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/directoryobject?view=graph-rest-1.0
 
@@ -11,7 +10,7 @@ class DirectoryObject(BaseData):
     The directoryObject type is the base type for many other directory entity types.
     """
 
-    id: str = None
+    id: Optional[str] = None
 
     @property
     def odata_id(self) -> str:

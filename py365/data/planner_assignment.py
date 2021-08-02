@@ -1,12 +1,11 @@
-import attr
+from pydantic import BaseModel
 from datetime import datetime
 
-from .base_data import BaseData
+
 from .identity import Identity
 
 
-@attr.s(auto_attribs=True)
-class PlannerAssignment(BaseData):
+class PlannerAssignment(BaseModel):
     assignedBy: Identity = None
     assignedDateTime: datetime = None
     orderHint: str = None

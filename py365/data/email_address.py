@@ -1,11 +1,10 @@
 """
 Represent the email address OG resource
 """
-import attr
-from .base_data import BaseData
+from pydantic import BaseModel
+from py365.utils import OptStr
 
 
-@attr.s(auto_attribs=True)
-class EmailAddress(BaseData):
-    address: str = None
-    name: str = None
+class EmailAddress(BaseModel):
+    address: OptStr = None
+    name: OptStr = None

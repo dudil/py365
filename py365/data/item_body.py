@@ -1,11 +1,8 @@
-import attr
+from pydantic import BaseModel
 
 from py365.enums import BodyType
 
-from .base_data import BaseData
 
-
-@attr.s(auto_attribs=True)
-class ItemBody(BaseData):
+class ItemBody(BaseModel):
     content: str = None
     contentType: BodyType = BodyType.HTML

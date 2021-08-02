@@ -1,17 +1,17 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0
 """
-import attr
+from pydantic import BaseModel
 import datetime
 from .assigned_license import AssignedLicense
 from .user import User
 from .directory_object import DirectoryObject
 from .on_premises_provisioning_error import OnPremisesProvisioningError
 from py365.enums import GroupType, GroupCategory, GroupVisibility
+from py365.utils import OptStr
 
 
-@attr.s(auto_attribs=True)
-class Group(DirectoryObject):
+class Group(BaseModel):
     """
     # group resource type
 
@@ -22,22 +22,22 @@ class Group(DirectoryObject):
     allowExternalSenders: bool = None
     assignedLicenses: [AssignedLicense] = None
     autoSubscribeNewMembers: bool = None
-    classification: str = None  # TODO: Check if enum
+    classification: OptStr = None  # TODO: Check if enum
     createdDateTime: datetime = None
-    description: str = None
-    displayName: str = None
+    description: OptStr = None
+    displayName: OptStr = None
     groupTypes: [GroupType] = None
     hasMembersWithLicenseErrors: bool = None
     isSubscribedByMail: bool = None
-    licenseProcessingState: str = None
-    mail: str = None
+    licenseProcessingState: OptStr = None
+    mail: OptStr = None
     mailEnabled: bool = None
-    mailNickname: str = None
+    mailNickname: OptStr = None
     onPremisesLastSyncDateTime: datetime = None
     onPremisesProvisioningErrors: [OnPremisesProvisioningError] = None
-    onPremisesSecurityIdentifier: str = None
+    onPremisesSecurityIdentifier: OptStr = None
     onPremisesSyncEnabled: bool = None
-    preferredDataLocation: str = None
+    preferredDataLocation: OptStr = None
     proxyAddresses: [str] = None
     renewedDateTime: datetime = None
     securityEnabled: bool = None
