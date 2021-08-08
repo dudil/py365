@@ -1,7 +1,6 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/user
 """
-from pydantic import BaseModel
 import datetime
 from .directory_object import DirectoryObject
 from .password_profile import PasswordProfile
