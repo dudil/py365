@@ -1,10 +1,10 @@
 # https://docs.microsoft.com/en-us/graph/api/resources/recipient
-from pydantic import BaseModel
 
+from .base_data import BaseData
 from .email_address import EmailAddress
 
 
-class Recipient(BaseModel):
+class Recipient(BaseData):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/recipient
     """

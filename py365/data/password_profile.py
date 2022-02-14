@@ -1,10 +1,11 @@
 """ https://docs.microsoft.com/en-us/graph/api/resources/passwordprofile?view=graph-rest-1.0 """
 import random
 import string
-from pydantic import BaseModel
+
+from .base_data import BaseData
 
 
-class PasswordProfile(BaseModel):
+class PasswordProfile(BaseData):
     forceChangePasswordNextSignIn: bool = None
     password: str = None
     forceChangePasswordNextSignInWithMfa: bool = None

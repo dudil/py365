@@ -4,11 +4,11 @@ https://docs.microsoft.com/en-us/graph/api/resources/identityset
 
 from typing import Optional
 
-from pydantic import BaseModel
+from .base_data import BaseData
 from .identity import Identity
 
 
-class IdentitySet(BaseModel):
+class IdentitySet(BaseData):
     """
     The IdentitySet resource is a keyed collection of identity resources.
     It is used to represent a set of identities associated with various events for an item,

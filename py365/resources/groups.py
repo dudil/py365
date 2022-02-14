@@ -1,6 +1,8 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/group
 """
+from typing import List
+
 from py365 import auth, data, enums
 from ._base_resource import BaseResource
 from ._child_resource import ChildResource
@@ -17,87 +19,88 @@ class Groups(BaseResource):
     """
 
     class Group(ChildResource):
-        def __init__(self, groupsAPI: BaseResource, groupId: str):
-            self.groupId = groupId
-            super().__init__(baseAPI=groupsAPI, edgeMid=f"/{groupId}")
+        def __init__(self, groups_api: BaseResource, group_id: str):
+            self.groupId = group_id
+            super().__init__(base_api=groups_api, edge_mid=f"/{group_id}")
 
-        def listPlans(self) -> [data.PlannerPlan]:
-            edgeEnd = "/planner/plans"
-            response = self.__getAPI__(edgeEnd=edgeEnd)
+        def list_plans(self) -> List[data.PlannerPlan]:
+            edge_end = "/planner/plans"
+            response = self.__get_api__(edge_end=edge_end)
             plans = []
             if response.ok:
-                respData = response.json()
-                plansData = respData.get("value")
-                for planData in plansData:
-                    plan = data.PlannerPlan()
-                    plan.fromResponse(data=planData)
+                resp_data = response.json()
+                plans_data = resp_data.get("value")
+                for plan_data in plans_data:
+                    plan = data.PlannerPlan.parse_raw(plan_data)
                     plans.append(plan)
             else:
                 print(f"Request Error {response.text}")
             return plans
 
-        def updateGroup(self, updateData: data.Group) -> bool:
-            json = updateData.json
-            response = self.__patchAPI__(json=json)
+        def update_group(self, update_data: data.Group) -> bool:
+            response = self.__patch_api__(data=update_data.dict())
             if response.ok:
-                retCode = True
+                ret_code = True
             else:
                 print(f"Request Error {response.text}")
-                retCode = False
-            return retCode
+                ret_code = False
+            return ret_code
 
-        def _listUsers(self, userType: enums.GroupUserTypes) -> [data.DirectoryObject]:
-            if userType is enums.GroupUserTypes.MEMBER:
-                edgeEnd = "/members"
-            elif userType is enums.GroupUserTypes.OWNER:
-                edgeEnd = "/owners"
+        def _list_users(
+            self, user_type: enums.GroupUserTypes
+        ) -> [data.DirectoryObject]:
+            if user_type is enums.GroupUserTypes.MEMBER:
+                edge_end = "/members"
+            elif user_type is enums.GroupUserTypes.OWNER:
+                edge_end = "/owners"
             else:
                 raise Exception(f"Not supported user type: {type}")
 
-            response = self.__getAPI__(edgeEnd=edgeEnd)
+            response = self.__get_api__(edge_end=edge_end)
             users: [data.DirectoryObject] = []
             if response.ok:
-                dirObjects = response.json().get("value")
-                for dirObject in dirObjects:
-                    user = data.DirectoryObject()
-                    user.fromResponse(data=dirObject)
+                dir_objects = response.json().get("value")
+                for dir_object in dir_objects:
+                    user = data.DirectoryObject.parse_raw(dir_object)
                     users.append(user)
             else:
                 print(f"Request Error {response.text}")
             return users
 
-        def listMembers(self) -> [data.DirectoryObject]:
+        def list_members(self) -> [data.DirectoryObject]:
             """
             https://docs.microsoft.com/en-us/graph/api/group-list-members
             :return:
             :rtype:
             """
-            return self._listUsers(enums.GroupUserTypes.MEMBER)
+            return self._list_users(enums.GroupUserTypes.MEMBER)
 
-        def listOwners(self) -> [data.DirectoryObject]:
+        def list_owners(self) -> [data.DirectoryObject]:
             """
             https://docs.microsoft.com/en-us/graph/api/group-list-owners
             :return:
             :rtype:
             """
-            return self._listUsers(enums.GroupUserTypes.Owner)
+            return self._list_users(enums.GroupUserTypes.Owner)
 
-        def _addUser(self, userType: enums.GroupUserTypes, user: data.DirectoryObject):
-            if userType is enums.GroupUserTypes.MEMBER:
-                edgeEnd = "/members/$ref"
-            elif userType is enums.GroupUserTypes.OWNER:
-                edgeEnd = "/owners/$ref"
+        def _add_user(
+            self, user_type: enums.GroupUserTypes, user: data.DirectoryObject
+        ):
+            if user_type is enums.GroupUserTypes.MEMBER:
+                edge_end = "/members/$ref"
+            elif user_type is enums.GroupUserTypes.OWNER:
+                edge_end = "/owners/$ref"
             else:
                 raise Exception(f"Not supported user type: {type}")
 
             json = {"@odata.id": user.odata_id}
-            response = self.__postAPI__(edgeEnd=edgeEnd, json=json)
+            response = self.__post_api__(edge_end=edge_end, data=json)
             if response.ok:
                 pass
             else:
                 print(f"Request Error {response.text}")
 
-        def addMember(self, member: data.DirectoryObject):
+        def add_member(self, member: data.DirectoryObject):
             """
             https://docs.microsoft.com/en-us/graph/api/group-post-members
             :param member:
@@ -105,9 +108,9 @@ class Groups(BaseResource):
             :return:
             :rtype:
             """
-            self._addUser(enums.GroupUserTypes.MEMBER, member)
+            self._add_user(enums.GroupUserTypes.MEMBER, member)
 
-        def addOwner(self, owner: data.DirectoryObject):
+        def add_owner(self, owner: data.DirectoryObject):
             """
             https://docs.microsoft.com/en-us/graph/api/group-post-owners
             :param owner:
@@ -115,90 +118,92 @@ class Groups(BaseResource):
             :return:
             :rtype:
             """
-            self._addUser(enums.GroupUserTypes.OWNER, owner)
+            self._add_user(enums.GroupUserTypes.OWNER, owner)
 
     def __init__(self, connection: auth.AppConnection):
         super().__init__(connection, "/groups")
 
-    def group(self, groupId) -> Group:
-        groupAPI = Groups.Group(groupsAPI=self, groupId=groupId)
-        return groupAPI
+    def group(self, group_id) -> Group:
+        group_api = Groups.Group(groups_api=self, group_id=group_id)
+        return group_api
 
-    def createGroup(self, newGroup: data.Group) -> data.Group:
+    def create_group(self, new_group: data.Group) -> data.Group:
         assert (
-            newGroup.displayName is not None
+            new_group.displayName is not None
         )  # The name to display in the address book for the group. Required.
         assert (
-            newGroup.mailEnabled is not None
+            new_group.mailEnabled is not None
         )  # Set to true for mail-enabled groups. Required.
         assert (
-            newGroup.mailNickname is not None
+            new_group.mailNickname is not None
         )  # The mail alias for the group. Required.
         assert (
-            newGroup.securityEnabled is not None
+            new_group.securityEnabled is not None
         )  # Set to true for security-enabled groups. Required.
-        #  assert(newGroup.owners is not None)  # The owners for the group at creation time. Optional.
-        #  assert(newGroup.members is not None)  # The members for the group at creation time. Optional.
+        #  assert(new_group.owners is not None)  # The owners for the group at creation time. Optional.
+        #  assert(new_group.members is not None)  # The members for the group at creation time. Optional.
         assert (
-            newGroup.groupTypes is not None
+            new_group.groupTypes is not None
         )  # Control the type of group and its membership
 
-        members = newGroup.members
-        membersDataList = [m.odata_id for m in members]
-        owners = newGroup.owners
-        ownersDataList = [o.odata_id for o in owners]
-        newGroup.members = None
-        newGroup.owners = None
-        json = newGroup.json
+        members = new_group.members
+        members_data_list = [m.odata_id for m in members]
+        owners = new_group.owners
+        owners_data_list = [o.odata_id for o in owners]
+        new_group.members = None
+        new_group.owners = None
+        json = new_group.json
 
         json.update(
-            {"owners@odata.bind": ownersDataList, "members@odata.bind": membersDataList}
+            {
+                "owners@odata.bind": owners_data_list,
+                "members@odata.bind": members_data_list,
+            }
         )
-        response = self.__postAPI__(json=json)
+        response = self.__post_api__(data=json)
         if response.ok:
-            respJson = response.json()
-            newGroup.fromResponse(data=respJson)
+            resp_json = response.json()
+            new_group.fromResponse(data=resp_json)
         else:
             print(f"Request Error {response.text}")
 
-        return newGroup
+        return new_group
 
-    def createGroupByCategory(
+    def create_group_by_category(
         self,
-        groupCategory: enums.GroupCategory,
-        displayName: str,
-        mailNickname: str,
+        group_category: enums.GroupCategory,
+        display_name: str,
+        mail_nickname: str,
         visibility: enums.GroupVisibility,
         owners: [data.DirectoryObject],
         members: [data.DirectoryObject] = None,
         description: str = None,
     ) -> data.Group:
-        newGroup = data.Group()
-        newGroup.category = groupCategory
-        newGroup.displayName = displayName
-        newGroup.mailNickname = mailNickname
-        newGroup.owners = owners
-        newGroup.members = members
-        newGroup.description = description
-        newGroup.visibility = visibility
+        new_group = data.Group()
+        new_group.category = group_category
+        new_group.displayName = display_name
+        new_group.mailNickname = mail_nickname
+        new_group.owners = owners
+        new_group.members = members
+        new_group.description = description
+        new_group.visibility = visibility
 
-        return self.createGroup(newGroup=newGroup)
+        return self.create_group(new_group=new_group)
 
-    def listGroups(self) -> [data.Group]:
+    def list_groups(self) -> [data.Group]:
         """
         List all the groups available in an organization, including but not limited to Office 365 Groups.
 
         :return:
         :rtype:
         """
-        response = self.__getAPI__()
+        response = self.__get_api__()
         if response.ok:
-            respData = response.json()
-            groupsData = respData.get("value")
+            resp_data = response.json()
+            groups_data = resp_data.get("value")
             groups = []
-            for groupData in groupsData:
-                group = data.Group()
-                group.fromResponse(data=groupData)
+            for group_data in groups_data:
+                group = data.Group.parse_raw(group_data)
                 groups.append(group)
             return groups
         else:

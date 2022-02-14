@@ -1,15 +1,14 @@
 # Resource documentation:
 # https://docs.microsoft.com/en-us/graph/api/resources/plannertask?view=graph-rest-1.0
-from pydantic import BaseModel
 from datetime import datetime
 
 from . import PlannerAppliedCategories
-
+from .base_data import BaseData
 from .identity import Identity
 from .planner_assignment import PlannerAssignment
 
 
-class PlannerTask(BaseModel):
+class PlannerTask(BaseData):
     activeChecklistItemCount: int = None
     appliedCategories: PlannerAppliedCategories = None
     assigneePriority: str = None

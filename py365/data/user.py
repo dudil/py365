@@ -2,9 +2,10 @@
 https://docs.microsoft.com/en-us/graph/api/resources/user
 """
 import datetime
+
+from py365.enums import UserTypes
 from .directory_object import DirectoryObject
 from .password_profile import PasswordProfile
-from py365.enums import UserTypes
 
 
 class User(DirectoryObject):

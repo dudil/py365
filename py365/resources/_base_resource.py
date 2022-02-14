@@ -1,6 +1,7 @@
 import urllib.parse
-from requests import Response
-from py365.auth import AppConnection
+from typing import Optional
+
+from py365.auth import AppConnection, GraphResponse
 from py365.data import BaseData
 
 
@@ -10,86 +11,75 @@ class BaseResource:
     Every OG API class should inherit from this class
     """
 
-    def __init__(self, connection: AppConnection, edgeBase):
+    def __init__(self, connection: AppConnection, edge_base):
         self._connection: AppConnection = connection
-        self.EDGE_BASE = edgeBase
+        self.EDGE_BASE = edge_base
 
     @staticmethod
-    def __getResponseData__(data: BaseData, response: Response):
+    def __get_response_data__(data: BaseData, response: GraphResponse):
         if data and response.ok:
             if response.text:
-                respJson = response.json()
-                data.fromResponse(data=respJson)
+                json = response.json()
+                data.parse_raw(json)
             if "ETag" in response.headers:
                 data.eTag = response.headers["ETag"]
 
-    def __getAPI__(
+    def __get_api__(
         self,
-        edgeEnd: str = "",
+        edge_end: str = "",
         params: dict = None,
-        permissions: [str] = None,
-        returnData: BaseData = None,
-    ) -> Response:
-        endpoint = self.EDGE_BASE + edgeEnd
+        return_data: BaseData = None,
+    ) -> GraphResponse:
+        endpoint = self.EDGE_BASE + edge_end
         endpoint = urllib.parse.quote(endpoint)
-        response = self._connection.get(
-            endpoint=endpoint, params=params, permissions=permissions
-        )
-        self.__getResponseData__(returnData, response)
+        response = self._connection.get(endpoint=endpoint, params=params)
+        self.__get_response_data__(return_data, response)
         return response
 
-    def __postAPI__(
+    def __post_api__(
         self,
-        edgeEnd: str = "",
-        json: dict = None,
-        permissions: [str] = None,
-        postData: BaseData = None,
-        returnData: BaseData = None,
-    ) -> Response:
-        endpoint = self.EDGE_BASE + edgeEnd
+        edge_end: str = "",
+        data: Optional[dict] = None,
+        post_data: Optional[BaseData] = None,
+        return_data: Optional[BaseData] = None,
+    ) -> GraphResponse:
+        endpoint = self.EDGE_BASE + edge_end
         endpoint = urllib.parse.quote(endpoint)
-        addHeaders = {}
-        if postData:
-            json = postData.json
-            if postData.eTag:
-                addHeaders.update({"If-Match": postData.eTag})
-        response = self._connection.post(
-            endpoint=endpoint, json=json, permissions=permissions, addHeaders=addHeaders
-        )
-        self.__getResponseData__(returnData, response)
+        headers = {}
+        if post_data:
+            data = post_data.json
+            if post_data.eTag:
+                headers.update({"If-Match": post_data.eTag})
+        response = self._connection.post(endpoint=endpoint, data=data, headers=headers)
+        self.__get_response_data__(return_data, response)
         return response
 
-    def __patchAPI__(
+    def __patch_api__(
         self,
-        edgeEnd: str = "",
-        json: dict = None,
-        permissions: [str] = None,
-        patchData: BaseData = None,
-        returnData: BaseData = None,
-    ) -> Response:
-        endpoint = self.EDGE_BASE + edgeEnd
+        edge_end: str = "",
+        json: Optional[dict] = None,
+        patch_data: Optional[BaseData] = None,
+        return_data: Optional[BaseData] = None,
+    ) -> GraphResponse:
+        endpoint = self.EDGE_BASE + edge_end
         endpoint = urllib.parse.quote(endpoint)
-        addHeaders = {}
-        if patchData:
-            json = patchData.json
-            if patchData.eTag:
-                addHeaders.update({"If-Match": patchData.eTag})
-        response = self._connection.patch(
-            endpoint=endpoint, json=json, permissions=permissions, addHeaders=addHeaders
-        )
-        self.__getResponseData__(returnData, response)
+        headers = {}
+        if patch_data:
+            json = patch_data.json
+            if patch_data.eTag:
+                headers.update({"If-Match": patch_data.eTag})
+        response = self._connection.patch(endpoint=endpoint, data=json, headers=headers)
+        self.__get_response_data__(return_data, response)
         return response
 
-    def __deleteAPI__(
-        self, edgeEnd: str = "", permissions: [str] = None, deleteData: BaseData = None
+    def __delete_api__(
+        self, edge_end: str = "", delete_data: Optional[BaseData] = None
     ):
-        endpoint = self.EDGE_BASE + edgeEnd
+        endpoint = self.EDGE_BASE + edge_end
         endpoint = urllib.parse.quote(endpoint)
-        addHeaders = {}
-        if deleteData:
-            if deleteData.eTag:
-                addHeaders.update({"If-Match": deleteData.eTag})
-        response = self._connection.delete(
-            endpoint=endpoint, permissions=permissions, addHeaders=addHeaders
-        )
+        headers = {}
+        if delete_data:
+            if delete_data.eTag:
+                headers.update({"If-Match": delete_data.eTag})
+        response = self._connection.delete(endpoint=endpoint, headers=headers)
         return response

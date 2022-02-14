@@ -1,8 +1,9 @@
 from typing import Optional
-from pydantic import BaseModel
+
+from .base_data import BaseData
 
 
-class DirectoryObject(BaseModel):
+class DirectoryObject(BaseData):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/directoryobject?view=graph-rest-1.0
 

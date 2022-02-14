@@ -1,5 +1,5 @@
-from pydantic import BaseModel
+from .base_data import BaseData
 
 
-class OnPremisesProvisioningError(BaseModel):
+class OnPremisesProvisioningError(BaseData):
     pass

@@ -12,7 +12,7 @@ class Planner(BaseResource):
     """
 
     def __init__(self, connection: auth.AppConnection):
-        super().__init__(connection, edgeBase="/planner")
+        super().__init__(connection, edge_base="/planner")
 
     def plan(self, planID: str = None, plan: data.PlannerPlan = None) -> PlanAPI:
         plansAPI = PlanAPI(plannerAPI=self, planID=planID, plan=plan)

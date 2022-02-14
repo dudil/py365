@@ -1,25 +1,35 @@
-import logging
-import requests
-from typing import Optional
+from abc import ABC
+from enum import Enum
+from typing import Optional, Any
 from urllib import parse
 
-AUTHORITY_BASE_URL = "https://login.microsoftonline.com/"
+from pydantic import BaseModel
 
 
-class AppConnection(object):
-    def __init__(self, app_id, app_secret, tenant_id, resource, api_ver):
-        self.app_id = app_id
-        self.app_secret = app_secret
-        self.tenant_id = tenant_id
+class CallMethod(str, Enum):
+    GET = "GET"
+    POST = "POST"
+    PATCH = "PATCH"
+    DELETE = "DELETE"
+
+
+class GraphResponse(BaseModel):
+    status_code: int
+    headers: Optional[dict] = None
+    content: Optional[bytes] = None
+    text: Optional[str] = None
+    json: Optional[Any] = None
+
+    @property
+    def ok(self) -> bool:
+        return self.status_code == "201"
+
+
+class AppConnection(ABC):
+    def __init__(self, resource, api_ver):
         self.resource = resource
-        self.authority = f"{AUTHORITY_BASE_URL}{tenant_id}"
         self.api_base_url = f"{self.resource}/{api_ver}/"
 
-    def verifyPermissions(self, permissions: [str]):
-        # TODO: check we indeed have the required permissions
-        pass
-
-    # TODO: Move to Utils Package
     def get_api_url(self, endpoint: str):
         """Convert a relative path such as /me/photo/$value to a full URI
         This is much easier to work with how MS are actually documenting their API
@@ -28,71 +38,44 @@ class AppConnection(object):
             return endpoint  # url is already complete
         return parse.urljoin(self.api_base_url, endpoint.lstrip("/"))
 
-    def getAccessToken(self) -> Optional[str]:
+    def request_from_graph(
+        self,
+        method: CallMethod,
+        url: str,
+        params: Optional[dict] = None,
+        data: Optional[dict] = None,
+        headers: Optional[dict] = None,
+    ) -> GraphResponse:
         raise NotImplementedError("pure function")
 
-    def getSession(self) -> Optional[requests.Session]:
-        accessToken = self.getAccessToken()
-        if accessToken:
-            session: requests.Session = requests.Session()
-            session.headers.update(
-                {
-                    "Authorization": f"Bearer {accessToken}",
-                    "Content-type": "application/json",
-                }
-            )
-            return session
-        else:
-            logging.error("no access token received")
-            return None
-
-    def get(
-        self, endpoint: str, params: dict, permissions: [str] = None
-    ) -> requests.Response:
-        self.verifyPermissions(permissions)
-        url = self.get_api_url(endpoint)
-        session = self.getSession()
-
-        response = session.get(url, params=params)
+    def get(self, endpoint: str, params: dict) -> GraphResponse:
+        url = self.get_api_url(endpoint=endpoint)
+        response = self.request_from_graph(
+            method=CallMethod.GET, url=url, params=params
+        )
         return response
 
     def post(
-        self,
-        endpoint: str,
-        json: dict,
-        permissions: [str] = None,
-        addHeaders: dict = None,
-    ) -> requests.Response:
-        self.verifyPermissions(permissions)
-        url = self.get_api_url(endpoint)
-        session = self.getSession()
-        if addHeaders:
-            session.headers.update(addHeaders)
-        response = session.post(url, json=json)
+        self, endpoint: str, data: dict, headers: Optional[dict] = None
+    ) -> GraphResponse:
+        url = self.get_api_url(endpoint=endpoint)
+        response = self.request_from_graph(
+            method=CallMethod.POST, url=url, data=data, headers=headers
+        )
         return response
 
     def patch(
-        self,
-        endpoint: str,
-        json: dict,
-        permissions: [str] = None,
-        addHeaders: dict = None,
-    ) -> requests.Response:
-        self.verifyPermissions(permissions)
-        url = self.get_api_url(endpoint)
-        session = self.getSession()
-        if addHeaders:
-            session.headers.update(addHeaders)
-        response = session.patch(url, json=json)
+        self, endpoint: str, data: dict, headers: Optional[dict] = None
+    ) -> GraphResponse:
+        url = self.get_api_url(endpoint=endpoint)
+        response = self.request_from_graph(
+            method=CallMethod.PATCH, url=url, data=data, headers=headers
+        )
         return response
 
-    def delete(
-        self, endpoint: str, permissions: [str] = None, addHeaders: dict = None
-    ) -> requests.Response:
-        self.verifyPermissions(permissions)
-        url = self.get_api_url(endpoint)
-        session = self.getSession()
-        if addHeaders:
-            session.headers.update(addHeaders)
-        response = session.delete(url)
+    def delete(self, endpoint: str, headers: Optional[dict] = None) -> GraphResponse:
+        url = self.get_api_url(endpoint=endpoint)
+        response = self.request_from_graph(
+            method=CallMethod.DELETE, url=url, headers=headers
+        )
         return response

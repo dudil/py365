@@ -1,9 +1,9 @@
 # Resource documentation:
 # https://docs.microsoft.com/en-us/graph/api/resources/plannerappliedcategories?view=graph-rest-1.0
-from pydantic import BaseModel
+from .base_data import BaseData
 
 
-class PlannerAppliedCategories(BaseModel):
+class PlannerAppliedCategories(BaseData):
     """
     The AppliedCategoriesCollection resource represents the collection of categories (or labels)
     that have been applied to a task. It is part of the plannerTask object.

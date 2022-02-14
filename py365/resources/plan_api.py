@@ -1,6 +1,6 @@
+from py365 import data
 from ._base_resource import BaseResource
 from ._child_resource import ChildResource
-from py365 import data
 
 
 class PlanAPI(ChildResource):
@@ -21,11 +21,11 @@ class PlanAPI(ChildResource):
             self.planID = plan.id
         else:
             raise ValueError("Either planID or plan must have valid value")
-        super().__init__(baseAPI=plannerAPI, edgeMid=f"/plans/{self.planID}")
+        super().__init__(base_api=plannerAPI, edge_mid=f"/plans/{self.planID}")
 
     def listTasks(self) -> [data.PlannerTask]:
         tasks: [data.PlannerTask] = []
-        response = self.__getAPI__(edgeEnd="/tasks")
+        response = self.__get_api__(edge_end="/tasks")
         if response.ok:
             respJson = response.json()
             for taskData in respJson["value"]:
@@ -38,7 +38,7 @@ class PlanAPI(ChildResource):
 
     def listBuckets(self) -> [data.PlannerBucket]:
         buckets: [data.PlannerBucket] = []
-        response = self.__getAPI__(edgeEnd="/buckets")
+        response = self.__get_api__(edge_end="/buckets")
         if response.ok:
             respJson = response.json()
             for bucketData in respJson["value"]:

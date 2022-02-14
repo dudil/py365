@@ -1,10 +1,8 @@
-from pydantic import BaseModel
-
-
+from .base_data import BaseData
 from .recipient import Recipient
 
 
-class InvitedUserMessageInfo(BaseModel):
+class InvitedUserMessageInfo(BaseData):
     """
     # https://docs.microsoft.com/en-us/graph/api/resources/invitedusermessageinfo
     """

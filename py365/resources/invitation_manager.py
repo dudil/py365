@@ -1,10 +1,10 @@
 # API Reference:
 # https://docs.microsoft.com/en-us/graph/api/resources/invitation
 
-from ._base_resource import BaseResource
 from py365.auth import AppConnection
 from py365.data import Invitation
 from py365.enums import InvitationStatusValues
+from ._base_resource import BaseResource
 
 
 class InvitationManager(BaseResource):
@@ -13,7 +13,7 @@ class InvitationManager(BaseResource):
     """
 
     def __init__(self, connection: AppConnection):
-        super().__init__(connection=connection, edgeBase="/invitations")
+        super().__init__(connection=connection, edge_base="/invitations")
 
     def createInvitation(self, invitation: Invitation) -> Invitation:
         """
@@ -23,7 +23,7 @@ class InvitationManager(BaseResource):
         :return:
         :rtype:
         """
-        response = self.__postAPI__(json=invitation.json)
+        response = self.__post_api__(data=invitation.json)
         # TODO check for valid response
         invitation.inviteRedeemUrl = response.json().get("inviteRedeemUrl", None)
         invitation.status = response.json().get("status", InvitationStatusValues.ERROR)

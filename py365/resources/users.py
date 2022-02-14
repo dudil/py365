@@ -2,6 +2,7 @@
 https://docs.microsoft.com/en-us/graph/api/resources/users
 """
 from typing import Optional
+
 from py365 import auth, data
 from ._base_resource import BaseResource
 from ._child_resource import ChildResource
@@ -26,7 +27,7 @@ class Users(BaseResource):
         # user key can be either id or login mail
         def __init__(self, usersAPI: BaseResource, userKey: str):
             self.userKey = userKey
-            super().__init__(baseAPI=usersAPI, edgeMid=f"/{userKey}")
+            super().__init__(base_api=usersAPI, edge_mid=f"/{userKey}")
 
         def getUser(self) -> data.User:
             """
@@ -38,7 +39,7 @@ class Users(BaseResource):
             """
 
             user: data.User = data.User()
-            response = self.__getAPI__()
+            response = self.__get_api__()
             if response.ok:
                 respJson = response.json()
                 user.fromResponse(respJson)
@@ -56,7 +57,7 @@ class Users(BaseResource):
             :return:
             :rtype:
             """
-            response = self.__patchAPI__(json=userData.json)
+            response = self.__patch_api__(data=userData.json)
 
             if response.ok:
                 print(f"updateUser Request OK!")
@@ -76,7 +77,7 @@ class Users(BaseResource):
             :rtype: Response
             """
             payload = {"message": message.json, "saveToSentItems": saveToSentItems}
-            response = self.__postAPI__(edgeEnd="/sendMail", json=payload)
+            response = self.__post_api__(edge_end="/sendMail", data=payload)
             return response
 
         def getMemberGroups(self, securityEnabledOnly: bool = False) -> [str]:
@@ -87,7 +88,7 @@ class Users(BaseResource):
             """
 
             payload = {"securityEnabledOnly": securityEnabledOnly}
-            response = self.__postAPI__(edgeEnd="/getMemberGroups", json=payload)
+            response = self.__post_api__(edge_end="/getMemberGroups", data=payload)
             groups: [str] = []
             if response.ok:
                 groups = response.json().get("value")
@@ -101,7 +102,7 @@ class Users(BaseResource):
         :param connection: graph connection
         :type connection: AppConnection
         """
-        BaseResource.__init__(self, connection=connection, edgeBase="/users/")
+        BaseResource.__init__(self, connection=connection, edge_base="/users/")
 
     def user(self, userKey: str) -> User:
         """
@@ -138,7 +139,7 @@ class Users(BaseResource):
         assert newUser.passwordProfile is not None
 
         json = newUser.json
-        response = self.__postAPI__(edgeEnd="", json=json)
+        response = self.__post_api__(edge_end="", data=json)
         if response.ok:
             respJson = response.json()
             user = data.User()
@@ -149,7 +150,7 @@ class Users(BaseResource):
             return None
 
     def listUsers(self) -> [data.User]:
-        response = self.__getAPI__()
+        response = self.__get_api__()
         if response.ok:
             respData = response.json()
             usersData = respData.get("value")

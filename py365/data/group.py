@@ -1,17 +1,19 @@
 """
 https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0
 """
-from pydantic import BaseModel
 import datetime
-from .assigned_license import AssignedLicense
-from .user import User
-from .directory_object import DirectoryObject
-from .on_premises_provisioning_error import OnPremisesProvisioningError
+from typing import Optional
+
 from py365.enums import GroupType, GroupCategory, GroupVisibility
 from py365.utils import OptStr
+from .assigned_license import AssignedLicense
+from .base_data import BaseData
+from .directory_object import DirectoryObject
+from .on_premises_provisioning_error import OnPremisesProvisioningError
+from .user import User
 
 
-class Group(BaseModel):
+class Group(BaseData):
     """
     # group resource type
 
@@ -19,11 +21,11 @@ class Group(BaseModel):
     """
 
     # Group Properties
-    allowExternalSenders: bool = None
+    allowExternalSenders: Optional[bool] = None
     assignedLicenses: [AssignedLicense] = None
-    autoSubscribeNewMembers: bool = None
+    autoSubscribeNewMembers: Optional[bool] = None
     classification: OptStr = None  # TODO: Check if enum
-    createdDateTime: datetime = None
+    createdDateTime: Optional[datetime] = None
     description: OptStr = None
     displayName: OptStr = None
     groupTypes: [GroupType] = None
@@ -87,16 +89,16 @@ class Group(BaseModel):
             return GroupCategory.DISTRIBUTION
 
     @category.setter
-    def category(self, groupCategory: GroupCategory):
+    def category(self, group_category: GroupCategory):
         self.groupTypes = []
-        if groupCategory is GroupCategory.OFFICE_365:
+        if group_category is GroupCategory.OFFICE_365:
             self.groupTypes.append(GroupType.UNIFIED.value)
             self.mailEnabled = True
             self.securityEnabled = False
-        elif groupCategory is GroupCategory.SECURITY:
+        elif group_category is GroupCategory.SECURITY:
             self.mailEnabled = False
             self.securityEnabled = True
-        elif groupCategory is GroupCategory.MAIL_ENABLED_SECURITY:
+        elif group_category is GroupCategory.MAIL_ENABLED_SECURITY:
             self.mailEnabled = True
             self.securityEnabled = True
         else:  # GroupCategory.DISTRIBUTION

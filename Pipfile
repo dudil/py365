@@ -4,18 +4,18 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-autopep8 = "*"
 pylint = "*"
-setuptools = "*"
-wheel = "*"
-twine = "*"
+mypy = "*"
+black = "*"
+flit = "*"
 
 [packages]
-requests = "*"
-adal = "*"
-urllib3 = "*"
-attrs = "*"
-msal = "*"
+pydantic = {extras = ["dotenv"], version = "*"}
+fastapi_msal = {extras = ["full"], version = "*"}
+httpx = "0.18.2"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

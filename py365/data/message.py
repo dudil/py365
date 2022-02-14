@@ -1,11 +1,10 @@
-from pydantic import BaseModel
-
+from .base_data import BaseData
 
 from .item_body import ItemBody
 from .recipient import Recipient
 
 
-class BaseMessage(BaseModel):
+class BaseMessage(BaseData):
     subject: str = None
     body: ItemBody = None
     toRecipients: [Recipient] = None

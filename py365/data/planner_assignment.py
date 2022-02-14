@@ -1,11 +1,10 @@
-from pydantic import BaseModel
 from datetime import datetime
 
-
+from .base_data import BaseData
 from .identity import Identity
 
 
-class PlannerAssignment(BaseModel):
+class PlannerAssignment(BaseData):
     assignedBy: Identity = None
     assignedDateTime: datetime = None
     orderHint: str = None

@@ -1,13 +1,12 @@
 from typing import Optional
-from pydantic import BaseModel
 
 from py365.enums import InvitationStatusValues, UserTypes
 from py365.utils import OptStr
-
+from .base_data import BaseData
 from .user import User
 
 
-class Invitation(BaseModel):
+class Invitation(BaseData):
     """
     https://docs.microsoft.com/en-us/graph/api/resources/invitation
     """
